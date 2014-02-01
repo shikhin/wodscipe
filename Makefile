@@ -9,11 +9,11 @@ wodscipe.img: mbr.bin $(PROGLANG).bin
 	dd if=mbr.bin of=wodscipe.img conv=notrunc bs=512 count=1
 	dd if=$(PROGLANG).bin of=wodscipe.img conv=notrunc bs=512 count=1 seek=1
 
-mbr.bin: main.asm io.asm disk.asm editor.asm $(MAKEDEPS)
-	nasm -fbin -o mbr.bin main.asm
+mbr.bin: ide/main.asm ide/io.asm ide/disk.asm ide/editor.asm $(MAKEDEPS)
+	cd ide; nasm -fbin -o ../mbr.bin main.asm
 
-$(PROGLANG).bin: $(PROGLANG).asm wodscipe.inc $(MAKEDEPS)
-	nasm -fbin -o $@ $<
+$(PROGLANG).bin: lang/$(PROGLANG).asm lang/wodscipe.inc $(MAKEDEPS)
+	cd lang; nasm -fbin -o ../$(PROGLANG).bin $(PROGLANG).asm
 
 disasm: mbr.bin $(PROGLANG).bin
 	$(CAT) mbr.bin $(PROGLANG).bin | ndisasm -b 16 - > disasm.tmp
