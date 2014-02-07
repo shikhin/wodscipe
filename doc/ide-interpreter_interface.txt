@@ -1,0 +1,15 @@
+Entry call:
+	SP: usable call stack, TOS being return address to IDE
+	SI: start of scratch space
+
+API, directly callable after including `wodscipe.inc`:
+	putchar:
+		in: AL: char to output, uses unix newline
+	puts:
+		in: SI: ASCIZ string to output
+	getchar:
+		out: AL: inputed char, uses unix newline
+	getline:
+		in: DI: buffer
+		    CX: length of buffer
+		out: AX: number of chars read
