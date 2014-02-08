@@ -7,7 +7,7 @@ API, directly callable after including `wodscipe.inc`:
 		in: AL: char to output, uses unix newline
 	puts:
 		in: SI: ASCIZ string to output
-	getchar:
+	getch:
 		out: AL: inputed char, uses unix newline
 	getline:
 		in: DI: buffer
