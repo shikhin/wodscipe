@@ -1,4 +1,5 @@
 org 0x7C00
+%define BOOTDEV  0x502
 
 start:
 	jmp 0x0:.segsetup
@@ -17,9 +18,24 @@ start:
 		mov es, bx
 	
 	cld
+	
+	mov [BOOTDEV], dl
+
+loadinterpreter:
+	mov bx, 1
+	mov bp, interpreter
+	xor di, di
+	call rwsector
+
+main:
+	call interpreter
 
 hang:
 	hlt
+	jmp hang
+
+panic:
+	call putchar
 	jmp hang
 
 %include "io.asm"
