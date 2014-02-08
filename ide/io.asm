@@ -31,3 +31,24 @@ puts:
 	.end:
 		popa
 		ret
+
+; OUT: al=inputted char
+getch:
+	push bx
+	push ax
+	
+	xor ax, ax
+	int 0x16
+	
+	mov bx, ax
+	pop ax
+	mov al, bl
+	pop bx
+	
+	cmp al, 13
+	jne .end
+	
+	.newline:
+		mov al, 10
+	.end:
+		ret

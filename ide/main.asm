@@ -7,6 +7,7 @@ start:
 	; Jump table
 	jmp word putchar
 	jmp word puts
+	jmp word getch
 	
 	.segsetup:
 		xor bx, bx
