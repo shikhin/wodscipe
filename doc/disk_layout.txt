@@ -1,0 +1,8 @@
+LBA  Content
+0    MBR
+1    Language interpreter
+2-   Header+Source
+
+LBA2 structure:
+0x0-0x1    Source code length, little-endian uint8
+0x2-0x1FF  Source code (and possibly garbage)
