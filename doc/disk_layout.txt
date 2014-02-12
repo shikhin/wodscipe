@@ -4,5 +4,5 @@ LBA  Content
 2-   Header+Source
 
 LBA2 structure:
-0x0-0x1    Source code length, little-endian uint8
+0x0-0x1    Source code length, little-endian uint16
 0x2-0x1FF  Source code (and possibly garbage)
