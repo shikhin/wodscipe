@@ -22,21 +22,18 @@ start:
 	
 	mov [BOOTDEV], dl
 
-loadinterpreter:
-	mov bx, 1
-	mov bp, interpreter
-	xor di, di
-	call rwsector
-
-main:
-	call interpreter
-
-hang:
-	hlt
-	jmp hang
+	.loadinterpreter:
+		mov bx, 1
+		mov bp, interpreter
+		xor di, di
+		call rwsector
+	
+	jmp editor
 
 panic:
 	call putchar
+hang:
+	hlt
 	jmp hang
 
 %include "io.asm"
