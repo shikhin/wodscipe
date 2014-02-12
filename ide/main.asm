@@ -8,6 +8,7 @@ start:
 	jmp word putchar
 	jmp word puts
 	jmp word getch
+	jmp word getline
 	
 	.segsetup:
 		xor bx, bx

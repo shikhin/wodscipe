@@ -30,5 +30,13 @@ editor:
 		lodsb
 		call putchar
 		loop .printloop
-	
-	jmp hang
+
+	.getlinetest:
+		mov di, 0x504
+		mov cx, 0x10
+		call getline
+		
+		mov si, di
+		call puts
+		
+		jmp .getlinetest

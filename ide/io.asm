@@ -52,3 +52,59 @@ getch:
 		mov al, 10
 	.end:
 		ret
+
+; IN: DI=buffer   CX=length of buffer
+; OUT: AX=chars read
+; NOTE: do _not_ pass 0-byte buffers
+getline:
+	push bx
+	push di
+	push si
+	
+	dec cx
+	mov bx, 0
+	.readloop:
+		
+		call getch
+		
+		cmp al, 8
+		je .delete
+		
+		cmp al, 10
+		je .end
+		
+		cmp bx, cx
+		je .readloop
+		
+		call putchar
+		stosb
+		inc bx
+		
+		jmp .readloop
+		
+		.delete:
+			cmp bx, 0
+			je .readloop
+			
+			mov si, .del_string
+			call puts
+			
+			dec bx
+			dec di
+			
+			jmp .readloop
+		.del_string: db 8, ' ', 8, 0
+		
+		.end:
+			call putchar
+			
+			xor al, al
+			stosb
+			
+			mov bx, ax
+			inc cx
+			
+			pop si
+			pop di
+			pop bx
+			ret
