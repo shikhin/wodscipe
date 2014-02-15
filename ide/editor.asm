@@ -6,7 +6,7 @@ editor:
 		call rwsector
 		
 		; How many sectors still to read
-		; It works and I can explain it if need be --nortti
+		; (len+2+511-512)/512 -> (len+1)/512
 		mov cx, [0x8000]
 		inc cx
 		shr cx, 9
