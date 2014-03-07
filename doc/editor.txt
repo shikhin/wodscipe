@@ -10,5 +10,5 @@ c           Change     Delete current line and enter insert mode where the line 
 d           Delete     Delete current line
 i           Insert     Enter insert mode before current line
 p           Print      Print current line to screen
-r           Run        Hand control over to interpreter and execute program (Program is not save to disk)
+r           Run        Hand control over to interpreter and execute program (Program is not saved to disk)
 w           Write      Save program to disk
