@@ -101,7 +101,7 @@ getline:
 			xor al, al
 			stosb
 			
-			mov bx, ax
+			mov ax, bx
 			inc cx
 			
 			pop si
