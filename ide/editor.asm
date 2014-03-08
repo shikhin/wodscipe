@@ -81,6 +81,19 @@ editor:
 			cmp al, 'r'
 			jne .skip7
 			; Run
+			.cmdrun:
+				; Put the start of scratch space into si, align to 512B to prevent saving of junk to disk
+				mov si, bp
+				add si, [0x8000]
+				add si, 0x1FF
+				and si, 0xFE00
+				
+				; Hack to make interpreter return directly to mainloop
+				pusha
+				call interpreter
+				popa
+				
+				jmp .mainloop
 		.skip7:
 			cmp al, '+'
 			jne .skip8

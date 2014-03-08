@@ -1,16 +1,20 @@
 %include "wodscipe.inc"
 
-start:
-	mov si, msg
-	call puts
+main:
+	mov bp, si
+	mov si, 0x8002
+	mov cx, [0x8000]
+	add cx, 0x8002
 	
-.loop:
-	call getch
-	call putchar
-	
-	cmp al, 10
-	jne .loop
-	
+	.mainloop:
+		cmp si, cx
+		je end
+		
+		lodsb
+		call putchar
+		
+		jmp .mainloop
+end:
 	ret
-
-msg: db "\o/", 10, 0
+	
+times 512-($-$$) db 0
