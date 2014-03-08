@@ -3,24 +3,24 @@ ORG 0x7C00
 
 start:
 	jmp 0x0:.segsetup
-	
+
 	; Jump table
 	jmp word putchar
 	jmp word puts
 	jmp word getch
 	jmp word getline
-	
+
 	.segsetup:
 		xor bx, bx
-		
+
 		mov ss, bx
 		mov esp, start
-		
+
 		mov ds, bx
 		mov es, bx
-	
+
 	cld
-	
+
 	mov [BOOTDEV], dl
 
 	.loadinterpreter:
@@ -28,7 +28,7 @@ start:
 		mov bx, interpreter
 		xor di, di
 		call rwsector
-	
+
 ; The editor continues.
 %include "editor.asm"
 

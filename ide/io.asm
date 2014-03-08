@@ -2,16 +2,16 @@
 ;	AL -> char to output
 putchar:
 	pusha
-	
+
 	mov ah, 0xE
 	int 0x10
-	
+
 	cmp al, 10
 	jne .end
-	
+
 	mov al, 13
 	int 0x10
-	
+
 	.end:
 		popa
 		ret
@@ -20,16 +20,16 @@ putchar:
 ;	SI -> null-terminated string
 puts:
 	pusha
-	
+
 	.loop:
 		lodsb
 		cmp al, 0
 		je .end
-		
+
 		call putchar
-		
+
 		jmp .loop
-	
+
 	.end:
 		popa
 		ret
@@ -78,17 +78,17 @@ getline:
 		inc bx
 
 		jmp .readloop
-		
+
 		.delete:
 			test bx, bx
 			jz .readloop
-			
+
 			mov si, .del_string
 			call puts
-			
+
 			dec bx
 			dec di
-			
+
 			jmp .readloop
 
 		.del_string: db 8, ' ', 8, 0
@@ -97,7 +97,7 @@ getline:
 		call putchar
 		xor al, al
 		stosb
-		
+
 		; STORE AX.
 		mov [esp + 14], bx
 
