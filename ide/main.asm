@@ -29,7 +29,8 @@ start:
 		xor di, di
 		call rwsector
 	
-	jmp editor
+; The editor continues.
+%include "editor.asm"
 
 panic:
 	; Get in the character.
@@ -41,9 +42,8 @@ hang:
 
 %include "io.asm"
 %include "disk.asm"
-%include "editor.asm"
 
-times 510-($-$$) db 0
+;times 510-($-$$) db 0
 dw 0xAA55
 
 interpreter:

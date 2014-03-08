@@ -2,25 +2,22 @@ editor:
 	.loadsource:
 		mov ax, 2
 		mov bx, 0x8000
-		mov di, 0
+		xor di, di
 		call rwsector
 		
 		; How many sectors still to read
-		; (len+2+511-512)/512 -> (len+1)/512
-		mov cx, [0x8000]
+		; (len+2+511)/512 -> (len+1)/512 + 1
+		mov cx, [bx]
 		inc cx
 		shr cx, 9
+		inc cx
 		
 		.loadloop:
-			jcxz .endloop
+			call rwsector
 
 			inc ax
 			add bx, 0x200
-			call rwsector
-			
-			dec cx
-			jmp .loadloop
-		.endloop:
+			loop .loadloop
 	
 	mov bp, 0x8002 ; Current start-of-line
 	
