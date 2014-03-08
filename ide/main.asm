@@ -1,4 +1,4 @@
-org 0x7C00
+ORG 0x7C00
 %define BOOTDEV  0x502
 
 start:
@@ -14,7 +14,7 @@ start:
 		xor bx, bx
 		
 		mov ss, bx
-		mov sp, start
+		mov esp, start
 		
 		mov ds, bx
 		mov es, bx
@@ -24,14 +24,16 @@ start:
 	mov [BOOTDEV], dl
 
 	.loadinterpreter:
-		mov bx, 1
-		mov bp, interpreter
+		mov ax, 1
+		mov bx, interpreter
 		xor di, di
 		call rwsector
 	
 	jmp editor
 
 panic:
+	; Get in the character.
+	mov al, '@'
 	call putchar
 hang:
 	hlt

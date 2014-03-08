@@ -1,20 +1,17 @@
-; NOTE: Shamelessly ripped off from selfer
 %define SECTORS_PER_TRACK   18
 %define HEADS               2
 %define TRACKS              80
 
-; IN: BX=LBA   BP=buffer   DI=0:read 1:write
+; IN:
+;	AX -> LBA
+;	BX -> buffer
+;	DI -> 0 for read, (1 << 8) for write
 rwsector:
 	pusha
-	
-	; Get the LBA into AX.
-	xchg ax, bx
-	
-	mov bx, bp
-	
+
 	; Three tries.
 	mov si, 3
-	
+
 	; Get CHS.
 	; CH  -> cylinder number.
 	; CL  -> sector number.
@@ -34,13 +31,10 @@ rwsector:
 	; Get track number.
 	shr ax, 1
 	mov ch, al
-	
+
 	mov dl, [BOOTDEV]
-	shl di, 8
 	
 	.loop:
-		clc
-		
 		; Prepare for interrupt.
 		mov ax, 0x0201
 		add ax, di
@@ -57,9 +51,7 @@ rwsector:
 		dec si
 		jnz .loop
 		
-	.error:
-		; Get in the character.
-		mov al, '@'
+	.error:		
 		jmp panic
 	
 	.return:

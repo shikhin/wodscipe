@@ -1,7 +1,7 @@
 editor:
 	.loadsource:
-		mov bx, 2
-		mov bp, 0x8000
+		mov ax, 2
+		mov bx, 0x8000
 		mov di, 0
 		call rwsector
 		
@@ -14,8 +14,8 @@ editor:
 		.loadloop:
 			jcxz .endloop
 
-			inc bx
-			add bp, 0x200
+			inc ax
+			add bx, 0x200
 			call rwsector
 			
 			dec cx
