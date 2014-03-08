@@ -1,4 +1,6 @@
 ORG 0x7C00
+CPU 386
+
 %define BOOTDEV  0x502
 
 start:

@@ -6,7 +6,7 @@ editor:
 		call rwsector
 
 		; How many sectors still to read
-		; (len+2+511)/512 -> (len+1)/512 + 1
+		; (len + 2 + 511)/512 -> (len + 1)/512 + 1
 		mov cx, [bx]
 		inc cx
 		shr cx, 9
@@ -30,33 +30,34 @@ editor:
 		je .cmdnext
 
 		cmp al, 1 ; All commands are 1 char
-		je .checkcmd
-
-		; Gotoline
-
-		jmp .mainloop
+		jne .error
 
 		.checkcmd:
-			mov al, [0x504]
+			mov al, [di]
 
+		.insert:
 			cmp al, 'i'
-			jne .skip1
+			jne .append
 			; Insert
-		.skip1:
+
+		.append:
 			cmp al, 'a'
-			jne .skip2
+			jne .delete
 			; Append
-		.skip2:
+
+		.delete:
 			cmp al, 'd'
-			jne .skip3
+			jne .change
 			; Delete
-		.skip3:
+
+		.change:
 			cmp al, 'c'
-			jne .skip4
+			jne .print
 			; Change
-		.skip4:
+
+		.print:
 			cmp al, 'p'
-			jne .skip5
+			jne .write
 			; Print
 			.cmdprint:
 				call nextnewline
@@ -69,50 +70,49 @@ editor:
 				xchg si, bp
 				mov [si], byte 10
 
-				jmp .mainloop
-		.skip5:
+				xor al, al
+
+		.write:
 			cmp al, 'w'
-			jne .skip6
+			jne .run
 			; Write
-		.skip6:
+
+		.run:
 			cmp al, 'r'
-			jne .skip7
+			jne .next
 			; Run
 			.cmdrun:
 				; Put the start of scratch space into si, align to 512B to prevent saving of junk to disk
-				mov si, bp
+				mov si, 0x8002
 				add si, [0x8000]
 				add si, 0x1FF
 				and si, 0xFE00
 
 				; Hack to make interpreter return directly to mainloop
-				pusha
 				call interpreter
-				popa
+				xor al, al
 
-				jmp .mainloop
-		.skip7:
+		.next:
 			cmp al, '+'
-			jne .skip8
+			jne .previous
 			; Next
 			.cmdnext:
-		.skip8:
+
+		.previous:
 			cmp al, '-'
-			jne .isdigit
+			jne .nomatch
+			; Previous
 
-		.isdigit:
-			cmp al, '0'
-			jb .mainloop
-			cmp al, '9'
-			ja .mainloop
-			; Gotoline
+		.nomatch:
+			test al, al
+			jz .mainloop
 
-			jmp .mainloop
 	.error:
 		mov si, .errormsg
 		call puts
 		jmp .mainloop
-	.errormsg: db '?', 0
+
+	.errormsg: db '?', 10, 0
 
 ; IN: si=pointer
 ; OUT: cf=0:newline 1:end of buf

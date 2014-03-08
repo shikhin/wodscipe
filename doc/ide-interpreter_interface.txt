@@ -2,6 +2,9 @@ Entry call:
 	SP: usable call stack, TOS being return address to IDE
 	SI: start of scratch space
 
+Interpretter should preserve:
+	BP register.
+
 API, directly callable after including `wodscipe.inc`:
 	putchar:
 		in: AL: char to output, uses unix newline
