@@ -7,3 +7,5 @@ bochsout.txt
 *.img
 *.tmp
 cat
+tools/encode
+tools/decode
