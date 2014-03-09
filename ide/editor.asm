@@ -27,11 +27,52 @@ editor:
 			cmp al, 'i'
 			jne .append
 			; Insert
+			.cmdinsert:
+				; hack: cx & di already set, by above
+				call getline
+
+				mov dx, ax
+				mov bx, di
+
+				mov si, bp
+				mov di, bp
+				add di, ax
+				inc di
+				
+				mov cx, [0x8000]
+				add cx, 0x8002
+				sub cx, bp
+				
+				add si, cx
+				add di, cx
+				inc cx
+
+				std
+				rep movsb
+				cld
+
+				mov si, bx
+				mov di, bp
+				mov cx, dx
+
+				rep movsb
+
+				mov al, 10
+				stosb
+				
+				inc dx
+				add [0x8000], dx
+
+				xor al, al
 
 		.append:
 			cmp al, 'a'
 			jne .delete
 			; Append
+			.cmdappend:
+				call next_newline
+				mov bp, si
+				jmp .cmdinsert
 
 		.delete:
 			cmp al, 'd'
