@@ -1,0 +1,3 @@
+For each language, there exists `example/$LANGUAGE.txt`. This file includes a
+simple demonstrative program that is can be converted to source.bin format with
+`tools/encode`.

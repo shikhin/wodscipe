@@ -1,9 +1,9 @@
 Entry call:
 	SP: usable call stack, TOS being return address to IDE
-	SI: start of scratch space (X)
 
 Interpretter should preserve:
 	BP register.
+	Segemt registers.
 
 API, directly callable after including `wodscipe.inc`:
 	putchar:

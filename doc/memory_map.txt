@@ -5,4 +5,3 @@
 0x7E00 - 0x7FFF  Interpreter binary, loaded by IDE
 0x8000 - 0x8001  Program source length
 0x8002 - 0xFFFF  Program source code, raw buffer
-                 Scratch space, 512B-aligned after source

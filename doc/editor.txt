@@ -1,14 +1,13 @@
-Editor is ed-like but highly cut-down. The program is read into memory at startup.
+Editor is ed-like but highly cut-down. The program is read into memory at
+startup. On startup editor starts on first line.
 
 Command     Name       Explanation
 +, newline  Next       Move to next line and output it
 -           Previous   Move to previous line and output it
-$           Last       Move to last line of file and output it (X)
-number      Goto       Move to line, where first line is line number 1 (X)
 a           Append     Enter insert mode after current line
-c           Change     Delete current line and enter insert mode where the line was (X)
 d           Delete     Delete current line
 i           Insert     Enter insert mode before current line
 p           Print      Print current line to screen
-r           Run        Hand control over to interpreter and execute program (Program is not saved to disk)
+r           Run        Hand control over to interpreter and execute program
+                       (Program is not saved to disk)
 w           Write      Save program to disk
