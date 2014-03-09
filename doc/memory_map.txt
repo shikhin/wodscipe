@@ -1,6 +1,7 @@
 0x0    - 0x501   Eldritch horrors
-0x502  - 0x503   boot device number, used by IDE
-0x504  - 0x7BFF  Callstack, used by IDE
+0x502  - 0x503   Boot device number, used by IDE
+0x504  - 0x553   Editor's line buffer
+0x554  - 0x7BFF  Callstack, used by IDE
 0x7C00 - 0x7DFF  IDE binary, loaded by BIOS
 0x7E00 - 0x7FFF  Interpreter binary, loaded by IDE
 0x8000 - 0x8001  Program source length
