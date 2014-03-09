@@ -91,7 +91,7 @@ editor:
 
 				mov si, bp
 				call is_bufend
-				jg .deleted
+				ja .deleted
 
 				call prev_newline
 				mov bp, si
@@ -216,7 +216,7 @@ prev_newline:
 	mov dx, is_bufstart
 	sub bp, 2
 	call dx
-	jg .find_prevline
+	ja .find_prevline
 
 	mov bp, 0x8002
 	.find_prevline:
