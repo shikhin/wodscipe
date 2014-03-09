@@ -58,7 +58,8 @@ editor:
 				call prev_newline
 				mov bp, si
 
-				jmp .cmdprint
+				xor al, al
+
 
 		.change:
 			cmp al, 'c'
