@@ -17,7 +17,7 @@ $(PROGLANG).bin: lang/$(PROGLANG).asm lang/wodscipe.inc $(MAKEDEPS)
 	cd lang; nasm -fbin -o ../$(PROGLANG).bin $(PROGLANG).asm
 
 source.bin: $(MAKEDEPS)
-	`which printf` "\x0e\x00Hello, world!\n" > source.bin
+	`which printf` "\x16\x00Hello, world!\nInsane!\n" > source.bin
 
 disasm: mbr.bin $(PROGLANG).bin
 	$(CAT) mbr.bin $(PROGLANG).bin | ndisasm -b 16 - > disasm.tmp

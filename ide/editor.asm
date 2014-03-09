@@ -60,17 +60,16 @@ editor:
 			jne .write
 			; Print
 			.cmdprint:
-				call nextnewline
+				call next_newline
 
-				mov [si], byte 0
+				xor al, al
+				xchg [si], al
 
 				xchg si, bp
 				call puts
 
 				xchg si, bp
-				mov [si], byte 10
-
-				xor al, al
+				xchg [si], al
 
 		.write:
 			cmp al, 'w'
@@ -97,11 +96,25 @@ editor:
 			jne .previous
 			; Next
 			.cmdnext:
+				call next_newline
+				call is_bufend
+				jz .error
+
+				mov bp, si
+				jmp .cmdprint
 
 		.previous:
 			cmp al, '-'
 			jne .nomatch
 			; Previous
+			.cmdprevious:
+				cmp bp, 0x8002
+				je .error
+
+				sub bp, 2
+				call prev_newline
+				mov bp, si
+				jmp .cmdprint
 
 		.nomatch:
 			test al, al
@@ -114,45 +127,58 @@ editor:
 
 	.errormsg: db '?', 10, 0
 
-; IN: si=pointer
-; OUT: cf=0:newline 1:end of buf
-iseob:
+; IN:
+;	SI -> pointer
+; OUT:
+; 	ZF -> 1, end of buffer, else not.
+is_bufend:
 	push bx
-
-	clc
-
 	mov bx, [0x8000]
 	add bx, 0x8002
 	cmp bx, si
-	jne .end
+	pop bx
+	ret
 
-	.true:
-		stc
-	.end:
-		pop bx
+; IN:
+;	SI -> pointer
+; OUT:
+; 	ZF -> 1, start of buffer, else not.
+is_bufstart:
+	cmp si, 0x8002
+	ret
 
-		ret
+; IN:
+;	BP -> buffer
+prev_newline:
+	mov dx, is_bufstart
+	std
+	jmp find_newline
 
-
-; IN: bp=buffer
-; OUT: si=either newline or end of buffer
-nextnewline:
+; IN:
+;	BP -> buffer
+next_newline:
+	mov dx, is_bufend
+; IN:
+;	BP -> buffer
+;   DX -> is_buf{end,start}
+;   Direction flag clear for next new line, set for previous new line.
+; OUT:
+;	SI -> next/previous line, or end/start of buffer
+find_newline:
 	push ax
 
-	clc
 	mov si, bp
-
 	.loop:
-		; If reached end of buffer
-		call iseob
-		je .end
+		; If reached start/end of buffer
+		call dx
+		jbe .end
 
 		lodsb
 		cmp al, 10
-		je .end
+		jne .loop
 
-		jmp .loop
 	.end:
-		pop ax
+		cld
 
+		pop ax
 		ret

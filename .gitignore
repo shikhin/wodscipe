@@ -1,5 +1,8 @@
 *.sublime-*
 
+.bochsrc
+bochsout.txt
+
 *.bin
 *.img
 *.tmp
