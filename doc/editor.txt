@@ -1,5 +1,6 @@
 Editor is ed-like but highly cut-down. The program is read into memory at
 startup. On startup editor starts on first line.
+NOTE: Unlike ed, here a and i only input one line at a time.
 
 Command     Name       Explanation
 +, newline  Next       Move to next line and output it
