@@ -1,14 +1,14 @@
-PROGLANG ?= rpncalc
+PROGLANG ?= brainfuck
 MAKEDEPS  = Makefile
 CAT      ?= cat
 
 all: wodscipe.img tools/encode tools/decode
 
-wodscipe.img: mbr.bin $(PROGLANG).bin source.bin
+wodscipe.img: mbr.bin $(PROGLANG).bin source-$(PROGLANG).bin
 	test -e wodscipe.img || dd if=/dev/zero of=wodscipe.img bs=1024 count=1440
 	dd if=mbr.bin of=wodscipe.img conv=notrunc bs=512 count=1
 	dd if=$(PROGLANG).bin of=wodscipe.img conv=notrunc bs=512 count=1 seek=1
-	dd if=source.bin of=wodscipe.img conv=notrunc bs=512 seek=2
+	dd if=source-$(PROGLANG).bin of=wodscipe.img conv=notrunc bs=512 seek=2
 
 mbr.bin: ide/main.asm ide/io.asm ide/disk.asm ide/editor.asm $(MAKEDEPS)
 	cd ide; nasm -fbin -o ../mbr.bin main.asm
@@ -16,7 +16,7 @@ mbr.bin: ide/main.asm ide/io.asm ide/disk.asm ide/editor.asm $(MAKEDEPS)
 $(PROGLANG).bin: lang/$(PROGLANG).asm lang/wodscipe.inc $(MAKEDEPS)
 	cd lang; nasm -fbin -o ../$(PROGLANG).bin $(PROGLANG).asm
 
-source.bin: example/$(PROGLANG).txt tools/encode
+source-%.bin: example/%.txt tools/encode
 	tools/encode < $< > $@
 
 %: %.c
