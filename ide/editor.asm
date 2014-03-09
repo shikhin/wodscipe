@@ -56,8 +56,8 @@ editor:
 				sub [bx], si
 				add [bx], bp
 
-				lea cx, [bx + 2]
-				add cx, [bx]
+				call is_bufend
+				mov cx, bx
 				sub cx, bp
 
 				mov di, bp
@@ -165,11 +165,9 @@ editor:
 ; OUT:
 ; 	ZF -> 1, end of buffer, else not.
 is_bufend:
-	push bx
 	mov bx, [0x8000]
 	add bx, 0x8002
 	cmp bx, si
-	pop bx
 	ret
 
 ; IN:
