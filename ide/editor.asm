@@ -93,7 +93,7 @@ editor:
 
 		.next:
 			cmp al, '+'
-			jne .previous
+			jne .last
 			; Next
 			.cmdnext:
 				call next_newline
@@ -102,6 +102,18 @@ editor:
 
 				mov bp, si
 				jmp .cmdprint
+
+		.last:
+			cmp al, '$'
+			jne .previous
+			; Last
+			.cmdlast:
+				call next_newline
+				call is_bufend
+				jz .cmdprint
+
+				mov bp, si
+				jmp .cmdlast
 
 		.previous:
 			cmp al, '-'
