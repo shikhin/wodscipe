@@ -31,29 +31,27 @@ editor:
 				; hack: cx & di already set, by above
 				call getline
 
-				mov dx, ax
-				mov bx, di
+				push di
 
-				mov si, bp
-				mov di, bp
-				add di, ax
-				inc di
-				
 				mov cx, [0x8000]
 				add cx, 0x8002
 				sub cx, bp
-				
+
+				mov si, bp
 				add si, cx
-				add di, cx
+				mov di, si
+				add di, ax
+				inc di
+				
 				inc cx
 
 				std
 				rep movsb
 				cld
 
-				mov si, bx
+				pop si
 				mov di, bp
-				mov cx, dx
+				mov cx, ax
 
 				rep movsb
 
