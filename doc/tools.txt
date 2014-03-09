@@ -4,4 +4,4 @@ tools/encode < plaintext > source.bin
 	Encodes program to source.bin format.
 
 tools/decode < source.bin > plaintext
-	Dedoces program from source.bin format.
+	Decodes program from source.bin format.
