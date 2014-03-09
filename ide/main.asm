@@ -34,18 +34,10 @@ start:
 ; The editor continues.
 %include "editor.asm"
 
-panic:
-	; Get in the character.
-	mov al, '@'
-	call putchar
-hang:
-	hlt
-	jmp hang
-
 %include "io.asm"
 %include "disk.asm"
 
-times 510-($-$$) db 0
+;times 510-($-$$) db 0
 dw 0xAA55
 
 interpreter:

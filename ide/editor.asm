@@ -35,7 +35,7 @@ editor:
 
 		.delete:
 			cmp al, 'd'
-			jne .change
+			jne .print
 			; Delete
 			.cmddelete:
 				call next_newline
@@ -53,18 +53,13 @@ editor:
 
 				mov si, bp
 				call is_bufend
-				jg .cmdprint
+				jg .deleted
 
 				call prev_newline
 				mov bp, si
 
-				xor al, al
-
-
-		.change:
-			cmp al, 'c'
-			jne .print
-			; Change
+				.deleted:
+					xor al, al
 
 		.print:
 			cmp al, 'p'
@@ -99,19 +94,13 @@ editor:
 			jne .next
 			; Run
 			.cmdrun:
-				; Put the start of scratch space into si, align to 512B to prevent saving of junk to disk
-				mov si, 0x8002
-				add si, [0x8000]
-				add si, 0x1FF
-				and si, 0xFE00
-
 				; Hack to make interpreter return directly to mainloop
 				call interpreter
 				xor al, al
 
 		.next:
 			cmp al, '+'
-			jne .last
+			jne .previous
 			; Next
 			.cmdnext:
 				call next_newline
@@ -120,18 +109,6 @@ editor:
 
 				mov bp, si
 				jmp .cmdprint
-
-		.last:
-			cmp al, '$'
-			jne .previous
-			; Last
-			.cmdlast:
-				call next_newline
-				call is_bufend
-				jz .cmdprint
-
-				mov bp, si
-				jmp .cmdlast
 
 		.previous:
 			cmp al, '-'

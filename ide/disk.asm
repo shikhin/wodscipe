@@ -52,7 +52,9 @@ rwsector:
 		jnz .loop
 
 	.error:
-		jmp panic
+		mov al, '@'
+		call putchar
+		jmp $
 
 	.return:
 		popa
