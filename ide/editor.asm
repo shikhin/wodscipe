@@ -49,6 +49,28 @@ editor:
 			cmp al, 'd'
 			jne .change
 			; Delete
+			.cmddelete:
+				call next_newline
+
+				mov bx, 0x8000
+				sub [bx], si
+				add [bx], bp
+
+				lea cx, [bx + 2]
+				add cx, [bx]
+				sub cx, bp
+
+				mov di, bp
+				rep movsb
+
+				mov si, bp
+				call is_bufend
+				jg .cmdprint
+
+				call prev_newline
+				mov bp, si
+
+				jmp .cmdprint
 
 		.change:
 			cmp al, 'c'
@@ -123,7 +145,6 @@ editor:
 				cmp bp, 0x8002
 				je .error
 
-				sub bp, 2
 				call prev_newline
 				mov bp, si
 				jmp .cmdprint
@@ -161,13 +182,21 @@ is_bufstart:
 
 ; IN:
 ;	BP -> buffer
+; DX, BP trashed.
 prev_newline:
 	mov dx, is_bufstart
-	std
-	jmp find_newline
+	sub bp, 2
+	call dx
+	jg .find_prevline
+
+	mov bp, 0x8002
+	.find_prevline:
+		std
+		jmp find_newline
 
 ; IN:
 ;	BP -> buffer
+; DX trashed.
 next_newline:
 	mov dx, is_bufend
 ; IN:
@@ -190,7 +219,8 @@ find_newline:
 		jne .loop
 
 	.end:
-		cld
-
 		pop ax
+
+	.ret:
+		cld
 		ret
