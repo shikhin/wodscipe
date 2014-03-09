@@ -5,21 +5,9 @@ editor:
 		xor di, di
 		call rwsector
 
-		; How many sectors still to read
-		; (len + 2 + 511)/512 -> (len + 1)/512 + 1
-		mov cx, [bx]
-		inc cx
-		shr cx, 9
-		inc cx
+		mov bp, 0x8002 ; Current start-of-line
 
-		.loadloop:
-			call rwsector
-
-			inc ax
-			add bx, 0x200
-			loop .loadloop
-
-	mov bp, 0x8002 ; Current start-of-line
+		jmp rw_source
 
 	.mainloop:
 		mov di, 0x504 ; Input buffer
@@ -97,6 +85,13 @@ editor:
 			cmp al, 'w'
 			jne .run
 			; Write
+			.cmdwrite:
+				; How many sectors to write.
+				; (len + 2 + 511)/512 -> (len + 1)/512 + 1
+				mov bx, 0x8000
+				mov ax, 2
+				mov di, 1 << 8
+				jmp rw_source
 
 		.run:
 			cmp al, 'r'
@@ -160,10 +155,30 @@ editor:
 
 	.errormsg: db '?', 10, 0
 
+
+; IN:
+;	DI -> for rwsector.
+;	AX, BX -> initialized.
+rw_source:
+	mov cx, [bx]
+	inc cx
+	shr cx, 9
+	inc cx
+
+	.writeloop:
+		call rwsector
+
+		inc ax
+		add bx, 0x200
+		loop .writeloop
+
+	jmp editor.mainloop
+
 ; IN:
 ;	SI -> pointer
 ; OUT:
 ; 	ZF -> 1, end of buffer, else not.
+; BX trashed.
 is_bufend:
 	mov bx, [0x8000]
 	add bx, 0x8002
