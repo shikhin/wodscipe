@@ -202,45 +202,46 @@ is_bufend:
 	ret
 
 ; IN:
-;	SI -> pointer
+;	BP -> buffer
+;   DX -> is_buf{end,start}
+;   Direction flag clear for next new line, set for previous new line.
 ; OUT:
-; 	ZF -> 1, start of buffer, else not.
-is_bufstart:
-	cmp si, 0x8002
-	ret
-
-; IN:
-;	BP -> buffer
-; DX, BP trashed.
+;	SI -> next/previous line, or end/start of buffer
 prev_newline:
-	mov dx, is_bufstart
-	sub bp, 2
-	call dx
-	ja .find_prevline
+	lea si, [bp - 1]
+	cmp si, 0x8003
 
-	mov bp, 0x8002
+	jae .find_prevline
+	mov si, 0x8003
+
 	.find_prevline:
-		std
-		jmp find_newline
+		.loop:
+			dec si
+			; If reached start/end of buffer
+			cmp si, 0x8002
+			jbe .ret
 
-; IN:
-;	BP -> buffer
-; DX trashed.
-next_newline:
-	mov dx, is_bufend
+			cmp [si], byte 10
+			jne .loop
+
+		.end:
+			inc si
+		.ret:
+			ret
+
 ; IN:
 ;	BP -> buffer
 ;   DX -> is_buf{end,start}
 ;   Direction flag clear for next new line, set for previous new line.
 ; OUT:
 ;	SI -> next/previous line, or end/start of buffer
-find_newline:
+next_newline:
 	push ax
 
 	mov si, bp
 	.loop:
 		; If reached start/end of buffer
-		call dx
+		call is_bufend
 		jbe .end
 
 		lodsb
@@ -251,5 +252,4 @@ find_newline:
 		pop ax
 
 	.ret:
-		cld
 		ret
