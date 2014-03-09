@@ -30,7 +30,6 @@ editor:
 			.cmdinsert:
 				; hack: cx & di already set, by above
 				call getline
-
 				push di
 
 				mov cx, [0x8000]
@@ -55,11 +54,11 @@ editor:
 
 				rep movsb
 
+				inc ax
+				add [0x8000], ax
+
 				mov al, 10
 				stosb
-				
-				inc dx
-				add [0x8000], dx
 
 				xor al, al
 
