@@ -1,0 +1,10 @@
+RPNcalc is a simple reverse polish notation calculator. It is intended as a
+demonstration on how to write interpreter for wodscipe.
+
+Command  Meaning
+num      push num to stack
+p        pop number and print it
++        pop 2 numbers, add , push result
+-        pop 2 numbers, subtract , push result
+*        pop 2 numbers, multiply, push result
+/        pop 2 numbers, divide, push result
