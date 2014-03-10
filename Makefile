@@ -16,7 +16,7 @@ mbr.bin: ide/main.asm ide/io.asm ide/disk.asm ide/editor.asm $(MAKEDEPS)
 $(PROGLANG).bin: langs/$(PROGLANG).asm langs/wodscipe.inc $(MAKEDEPS)
 	cd langs; nasm -fbin -o ../$(PROGLANG).bin $(PROGLANG).asm
 
-source-%.bin: example/%.txt tools/encode $(MAKEDEPS)
+source-%.bin: langs/%.txt tools/encode $(MAKEDEPS)
 	tools/encode < $< > $@
 
 %: %.c $(MAKEDEPS)
@@ -26,7 +26,7 @@ disasm: mbr.bin $(PROGLANG).bin
 	$(CAT) mbr.bin $(PROGLANG).bin | ndisasm -b 16 - > disasm.tmp
 
 clean:
-	rm -f wodscipe.img *.bin cat *.tmp
+	rm -f wodscipe.img *.bin cat *.tmp tools/encode tools/decode
 
 .PHONY: all disasm clean
 
