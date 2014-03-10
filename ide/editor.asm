@@ -1,13 +1,21 @@
 editor:
 	.loadsource:
-		mov ax, 2
-		mov bx, 0x8000
-		xor di, di
-		call rwsector
+		lea bp, [bx + 2] ; Current start-of-line
 
-		mov bp, 0x8002 ; Current start-of-line
+	.rw_source:
+		mov cx, [bx]
+		inc cx
+		shr cx, 9
+		inc cx
 
-		jmp rw_source
+		push bx
+		.writeloop:
+			call rwsector
+
+			inc ax
+			add bx, 0x200
+			loop .writeloop
+		pop bx
 
 	.mainloop:
 		mov di, 0x504 ; Input buffer
@@ -32,8 +40,8 @@ editor:
 				call getline
 				push di
 
-				mov cx, [0x8000]
-				add cx, 0x8002
+				lea cx, [bx + 2]
+				add cx, [bx]
 				sub cx, bp
 
 				mov si, bp
@@ -55,7 +63,7 @@ editor:
 				rep movsb
 
 				inc ax
-				add [0x8000], ax
+				add [bx], ax
 
 				mov al, 10
 				stosb
@@ -78,12 +86,11 @@ editor:
 			.cmddelete:
 				call next_newline
 
-				mov bx, 0x8000
 				sub [bx], si
 				add [bx], bp
 
 				call is_bufend
-				mov cx, bx
+				mov cx, dx
 				sub cx, bp
 
 				mov di, bp
@@ -122,10 +129,9 @@ editor:
 			.cmdwrite:
 				; How many sectors to write.
 				; (len + 2 + 511)/512 -> (len + 1)/512 + 1
-				mov bx, 0x8000
 				mov ax, 2
 				mov di, 1 << 8
-				jmp rw_source
+				jmp .rw_source
 
 		.run:
 			cmp al, 'r'
@@ -171,34 +177,15 @@ editor:
 
 	.errormsg: db '?', 10, 0
 
-
-; IN:
-;	DI -> for rwsector.
-;	AX, BX -> initialized.
-rw_source:
-	mov cx, [bx]
-	inc cx
-	shr cx, 9
-	inc cx
-
-	.writeloop:
-		call rwsector
-
-		inc ax
-		add bx, 0x200
-		loop .writeloop
-
-	jmp editor.mainloop
-
 ; IN:
 ;	SI -> pointer
 ; OUT:
 ; 	ZF -> 1, end of buffer, else not.
-; BX trashed.
+; DX trashed.
 is_bufend:
-	mov bx, [0x8000]
-	add bx, 0x8002
-	cmp bx, si
+	lea dx, [bx + 2]
+	add dx, [bx]
+	cmp dx, si
 	ret
 
 ; IN:

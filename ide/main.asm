@@ -13,23 +13,26 @@ start:
 	jmp word getline
 
 	.segsetup:
-		xor bx, bx
+		xor ax, ax
 
-		mov ss, bx
+		mov ss, ax
 		mov esp, start
 
-		mov ds, bx
-		mov es, bx
+		mov ds, ax
+		mov es, ax
 
 	cld
 
 	mov [BOOTDEV], dl
 
-	.loadinterpreter:
-		mov ax, 1
-		mov bx, interpreter
-		xor di, di
+	mov cx, 2
+	xor di, di
+	mov bx, interpreter - 0x200
+	.load:
+		add bx, 0x200
+		inc ax
 		call rwsector
+		loop .load
 
 ; The editor continues.
 %include "editor.asm"
@@ -37,7 +40,7 @@ start:
 %include "io.asm"
 %include "disk.asm"
 
-times 510-($-$$) db 0
+;times 510-($-$$) db 0
 dw 0xAA55
 
 interpreter:
