@@ -42,15 +42,21 @@ start:
 	push bp
 	push es
 	
-	; Source
-	mov si, 0x8002
-	mov di, [0x8000]
-	add di, 0x8002
-	
 	; Tape & tape pointer
 	mov ax, 0x1000
 	mov es, ax
 	mov bp, 0
+	
+	; Zero tape
+	xor di, di
+	mov cx, 0xFFFF
+	xor al, al
+	rep stosb
+	
+	; Source
+	mov si, 0x8002
+	mov di, [0x8000]
+	add di, 0x8002
 	
 	call interpret
 	
