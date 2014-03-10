@@ -89,8 +89,8 @@ editor:
 				sub [bx], si
 				add [bx], bp
 
-				call is_bufend
-				mov cx, dx
+				lea cx, [bx + 2]
+				add cx, [bx]
 				sub cx, bp
 
 				mov di, bp
@@ -101,8 +101,6 @@ editor:
 				ja .deleted
 
 				call prev_newline
-				mov bp, si
-
 				.deleted:
 					xor al, al
 
@@ -139,7 +137,9 @@ editor:
 			; Run
 			.cmdrun:
 				; Hack to make interpreter return directly to mainloop
+				pusha
 				call interpreter
+				popa
 				xor al, al
 
 		.next:
@@ -172,16 +172,24 @@ editor:
 				je .error
 
 				call prev_newline
-				mov bp, si
 				jmp .cmdprint
 
 		.first:
 			cmp al, '1'
-			jne .nomatch
+			jne .list
 			; First
 			.cmdfirst:
 				lea bp, [bx + 2]
 				jmp .cmdprint
+
+		.list:
+			cmp al, 'l'
+			jne .nomatch
+			; List
+			.cmdlist:
+				lea si, [bx + 2]
+				call puts
+				xor al, al
 
 		.nomatch:
 			test al, al
@@ -212,24 +220,24 @@ is_bufend:
 ; OUT:
 ;	SI -> next/previous line, or end/start of buffer
 prev_newline:
-	lea si, [bp - 1]
-	cmp si, 0x8003
+	dec bp
+	cmp bp, 0x8003
 
 	jae .find_prevline
-	mov si, 0x8003
+	mov bp, 0x8003
 
 	.find_prevline:
 		.loop:
-			dec si
+			dec bp
 			; If reached start/end of buffer
-			cmp si, 0x8002
+			cmp bp, 0x8002
 			jbe .ret
 
-			cmp [si], byte 10
+			cmp [bp], byte 10
 			jne .loop
 
 		.end:
-			inc si
+			inc bp
 		.ret:
 			ret
 
