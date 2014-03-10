@@ -13,8 +13,8 @@ wodscipe.img: mbr.bin $(PROGLANG).bin source-$(PROGLANG).bin
 mbr.bin: ide/main.asm ide/io.asm ide/disk.asm ide/editor.asm $(MAKEDEPS)
 	cd ide; nasm -fbin -o ../mbr.bin main.asm
 
-$(PROGLANG).bin: lang/$(PROGLANG).asm lang/wodscipe.inc $(MAKEDEPS)
-	cd lang; nasm -fbin -o ../$(PROGLANG).bin $(PROGLANG).asm
+$(PROGLANG).bin: langs/$(PROGLANG).asm langs/wodscipe.inc $(MAKEDEPS)
+	cd langs; nasm -fbin -o ../$(PROGLANG).bin $(PROGLANG).asm
 
 source-%.bin: example/%.txt tools/encode
 	tools/encode < $< > $@
