@@ -86,11 +86,11 @@ editor:
 			.cmddelete:
 				call next_newline
 
+				mov cx, dx
+				sub cx, si
+
 				sub [bx], si
 				add [bx], bp
-
-				mov cx, dx
-				sub cx, bp
 
 				mov di, bp
 				rep movsb
@@ -136,9 +136,7 @@ editor:
 			; Run
 			.cmdrun:
 				; Hack to make interpreter return directly to mainloop
-				pusha
 				call interpreter
-				popa
 				xor al, al
 
 		.next:
@@ -188,12 +186,15 @@ editor:
 			.cmdlist:
 				lea si, [bx + 2]
 				mov cx, [bx]
+				jcxz .listed
+
 				.loop:
 					lodsb
 					call putchar
 					loop .loop
 
-				xor al, al
+				.listed:
+					xor al, al
 
 		.nomatch:
 			test al, al
