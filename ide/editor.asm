@@ -181,7 +181,7 @@ editor:
 			; First
 			.cmdfirst:
 				lea bp, [bx + 2]
-				xor al, al
+				jmp .cmdprint
 
 		.nomatch:
 			test al, al
