@@ -1,6 +1,6 @@
 Brainfuck interpreter is mostly pretty standard one (maybe except how loops are
 implemented) but does contain pretty nice debugger. To enable debugger
-uncomment the third line in `lang/brainfuck.asm`.
+uncomment the third line in `langs/brainfuck.asm`.
 
 Command  Meaning
 +        *p++
