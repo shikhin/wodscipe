@@ -2,7 +2,7 @@ PROGLANG ?= brainfuck
 MAKEDEPS  = Makefile
 CAT      ?= cat
 
-all: wodscipe.img tools/encode tools/decode
+all: tools/encode tools/decode wodscipe.img
 
 wodscipe.img: mbr.bin $(PROGLANG).bin source-$(PROGLANG).bin
 	test -e wodscipe.img || dd if=/dev/zero of=wodscipe.img bs=1024 count=1440
