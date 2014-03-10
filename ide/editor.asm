@@ -89,8 +89,7 @@ editor:
 				sub [bx], si
 				add [bx], bp
 
-				lea cx, [bx + 2]
-				add cx, [bx]
+				mov cx, dx
 				sub cx, bp
 
 				mov di, bp
@@ -188,7 +187,12 @@ editor:
 			; List
 			.cmdlist:
 				lea si, [bx + 2]
-				call puts
+				mov cx, [bx]
+				.loop:
+					lodsb
+					call putchar
+					loop .loop
+
 				xor al, al
 
 		.nomatch:
@@ -248,8 +252,6 @@ prev_newline:
 ; OUT:
 ;	SI -> next/previous line, or end/start of buffer
 next_newline:
-	push ax
-
 	mov si, bp
 	.loop:
 		; If reached start/end of buffer
@@ -261,7 +263,4 @@ next_newline:
 		jne .loop
 
 	.end:
-		pop ax
-
-	.ret:
 		ret
