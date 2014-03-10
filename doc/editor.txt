@@ -1,14 +1,18 @@
-Editor is ed-like but highly cut-down. The program is read into memory at
-startup. On startup editor starts on first line.
-NOTE: Unlike ed, here a and i only input one line at a time.
+Editor is ed-like, but highly cut-down. The program is read into memory at
+startup. On startup, editor starts at the first line.
+
+NOTE: Unlike ed, 'a' and 'i' input only one line at a time.
 
 Command     Name       Explanation
 +, newline  Next       Move to next line and output it
+$           Last       Move to the last line and output it
 -           Previous   Move to previous line and output it
+1           First      Move to the first line and output it
 a           Append     Enter insert mode after current line
 d           Delete     Delete current line
 i           Insert     Enter insert mode before current line
 p           Print      Print current line to screen
+l           List       List out the entire program
 r           Run        Hand control over to interpreter and execute program
                        (Program is not saved to disk)
 w           Write      Save program to disk
