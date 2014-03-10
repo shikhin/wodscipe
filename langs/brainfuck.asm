@@ -39,7 +39,7 @@
 %endmacro
 
 start:
-	push bp
+	pusha
 	push es
 	
 	; Tape & tape pointer
@@ -61,7 +61,7 @@ start:
 	call interpret
 	
 	pop es
-	pop bp
+	popa
 	ret
 
 interpret:

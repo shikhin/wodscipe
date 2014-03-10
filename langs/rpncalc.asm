@@ -12,7 +12,7 @@
 %endmacro
 
 main:
-	push bp
+	pusha
 	push es
 	
 	; Stack
@@ -157,7 +157,7 @@ end:
 	call puts
 	
 	pop es
-	pop bp
+	popa
 	ret
 
 endmsg: db 'end', 10, 0
