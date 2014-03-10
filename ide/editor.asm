@@ -144,7 +144,7 @@ editor:
 
 		.next:
 			cmp al, '+'
-			jne .previous
+			jne .last
 			; Next
 			.cmdnext:
 				call next_newline
@@ -154,9 +154,18 @@ editor:
 				mov bp, si
 				jmp .cmdprint
 
+		.last:
+			cmp al, '$'
+			jne .previous
+			; Last
+			.cmdlast:
+				lea bp, [bx + 2]
+				add bp, [bx]
+				jmp .cmdprevious
+
 		.previous:
 			cmp al, '-'
-			jne .nomatch
+			jne .first
 			; Previous
 			.cmdprevious:
 				cmp bp, 0x8002
@@ -165,6 +174,14 @@ editor:
 				call prev_newline
 				mov bp, si
 				jmp .cmdprint
+
+		.first:
+			cmp al, '1'
+			jne .nomatch
+			; First
+			.cmdfirst:
+				lea bp, [bx + 2]
+				xor al, al
 
 		.nomatch:
 			test al, al
