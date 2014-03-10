@@ -16,10 +16,10 @@ mbr.bin: ide/main.asm ide/io.asm ide/disk.asm ide/editor.asm $(MAKEDEPS)
 $(PROGLANG).bin: langs/$(PROGLANG).asm langs/wodscipe.inc $(MAKEDEPS)
 	cd langs; nasm -fbin -o ../$(PROGLANG).bin $(PROGLANG).asm
 
-source-%.bin: example/%.txt tools/encode
+source-%.bin: example/%.txt tools/encode $(MAKEDEPS)
 	tools/encode < $< > $@
 
-%: %.c
+%: %.c $(MAKEDEPS)
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@ $<
 
 disasm: mbr.bin $(PROGLANG).bin
