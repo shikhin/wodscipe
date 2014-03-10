@@ -2,8 +2,9 @@ Entry call:
 	SP: usable call stack, TOS being return address to IDE
 
 Interpreter should preserve:
-	BP register.
+	BX and BP register.
 	Segment registers.
+	Suitable environment for the BIOS.
 
 API, directly callable after including `wodscipe.inc`:
 	putchar:
