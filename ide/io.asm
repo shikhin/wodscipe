@@ -64,6 +64,7 @@ getline:
 	.readloop:
 		call getch
 
+		; Delete the last character.
 		cmp al, 8
 		je .delete
 
@@ -92,7 +93,7 @@ getline:
 			jmp .readloop
 
 		.del_string: db 8, ' ', 8, 0
-		
+
 	.end:
 		call putchar
 		xor al, al

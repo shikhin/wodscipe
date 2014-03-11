@@ -2,6 +2,7 @@
 %define HEADS               2
 %define TRACKS              80
 
+; Disk I/O.
 ; IN:
 ;	AX -> LBA
 ;	BX -> buffer

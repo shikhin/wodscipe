@@ -1,8 +1,15 @@
+; The editor.
+; IN:
+;	BX -> 0x8000.
+;	AX -> 2
+;	DI -> 0
 editor:
 	.loadsource:
 		lea bp, [bx + 2] ; Current start-of-line
 
 	.rw_source:
+		; How many sectors to read/write.
+		; (len + 2 + 511)/512 -> (len + 1)/512 + 1
 		mov cx, [bx]
 		inc cx
 		shr cx, 9
@@ -18,11 +25,13 @@ editor:
 		pop bx
 
 	.mainloop:
-		mov di, 0x504 ; Input buffer
-		mov cx, 0x50 ; 80 char, the width of textmode line
+		; Input buffer.
+		mov di, 0x504
+		; 80 characters (most probably width of current mode's line, mode 03)
+		mov cx, 0x50
 		call getline
 
-		cmp al, 0 ; Compare just al, len will fit in one byte
+		cmp al, 0
 		je .cmdnext
 
 		cmp al, 1 ; All commands are 1 char
@@ -36,32 +45,36 @@ editor:
 			jne .append
 			; Insert
 			.cmdinsert:
-				; hack: cx & di already set, by above
+				; cx & di already set above
 				call getline
 				push di
 
+				; Get bytes following bp = last "address" - bp.
 				lea cx, [bx + 2]
 				add cx, [bx]
 				sub cx, bp
 
+				; Copy from BP to (BP + AX + 1), but reversed (as overlap).
 				mov si, bp
 				add si, cx
 				mov di, si
 				add di, ax
 				inc di
-				
+
 				inc cx
 
 				std
 				rep movsb
 				cld
 
+				; Copy from input buffer to BP, the new line.
 				pop si
 				mov di, bp
 				mov cx, ax
 
 				rep movsb
 
+				; Update file length.
 				inc ax
 				add [bx], ax
 
@@ -75,6 +88,7 @@ editor:
 			jne .delete
 			; Append
 			.cmdappend:
+				; Go to next line, and insert before that.
 				call next_newline
 				mov bp, si
 				jmp .cmdinsert
@@ -84,17 +98,24 @@ editor:
 			jne .print
 			; Delete
 			.cmddelete:
+				; Find next newline.
 				call next_newline
 
+				; next_newline calls to is_bufend at least once,
+				; which puts bx + 2 + [bx] into dx.
+
+				; Get number of bytes from next line to end.
 				mov cx, dx
 				sub cx, si
 
+				; Remove size of current line from [bx].
 				sub [bx], si
 				add [bx], bp
 
 				mov di, bp
 				rep movsb
 
+				; If at end of buffer, go to line before.
 				mov si, bp
 				call is_bufend
 				ja .deleted
@@ -108,14 +129,18 @@ editor:
 			jne .write
 			; Print
 			.cmdprint:
+				; Get next line.
 				call next_newline
 
+				; Put a null-terminator at beginning of next line.
 				xor al, al
 				xchg [si], al
 
+				; Print.
 				xchg si, bp
 				call puts
 
+				; Restore character.
 				xchg si, bp
 				xchg [si], al
 
@@ -124,8 +149,6 @@ editor:
 			jne .run
 			; Write
 			.cmdwrite:
-				; How many sectors to write.
-				; (len + 2 + 511)/512 -> (len + 1)/512 + 1
 				mov ax, 2
 				mov di, 1 << 8
 				jmp .rw_source
@@ -135,7 +158,6 @@ editor:
 			jne .next
 			; Run
 			.cmdrun:
-				; Hack to make interpreter return directly to mainloop
 				call interpreter
 				xor al, al
 
@@ -156,6 +178,7 @@ editor:
 			jne .previous
 			; Last
 			.cmdlast:
+				; Find the previous line from EOF.
 				lea bp, [bx + 2]
 				add bp, [bx]
 				jmp .cmdprevious
@@ -207,23 +230,23 @@ editor:
 
 	.errormsg: db '?', 10, 0
 
+; Is end of buffer?
 ; IN:
 ;	SI -> pointer
 ; OUT:
 ; 	ZF -> 1, end of buffer, else not.
-; DX trashed.
+;	DX -> bx + 2 + [bx]
 is_bufend:
 	lea dx, [bx + 2]
 	add dx, [bx]
 	cmp dx, si
 	ret
 
+; Find previous line.
 ; IN:
 ;	BP -> buffer
-;   DX -> is_buf{end,start}
-;   Direction flag clear for next new line, set for previous new line.
 ; OUT:
-;	SI -> next/previous line, or end/start of buffer
+;	BP -> previous line, or start of buffer
 prev_newline:
 	dec bp
 	cmp bp, 0x8003
@@ -246,12 +269,12 @@ prev_newline:
 		.ret:
 			ret
 
+; Find next line.
 ; IN:
 ;	BP -> buffer
-;   DX -> is_buf{end,start}
-;   Direction flag clear for next new line, set for previous new line.
 ; OUT:
 ;	SI -> next/previous line, or end/start of buffer
+;	DX -> bx + 2 + [bx]
 next_newline:
 	mov si, bp
 	.loop:
