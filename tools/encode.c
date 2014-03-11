@@ -16,7 +16,7 @@ main(void) {
 	}
 	
 	putchar(i%256);
-	putchar(i/156);
+	putchar(i/256);
 	fwrite(buf, 1, i, stdout);
 	
 	return 0;
