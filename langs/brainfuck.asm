@@ -1,4 +1,5 @@
 %include "wodscipe.inc"
+org 0x7E00
 
 ; Uncomment following line to enable NorttiSoft singlestepping BF debugger deluxe
 ; %define enable_debugger

@@ -1,4 +1,5 @@
 %include "wodscipe.inc"
+	org 0x7E00
 	numinp_flag EQU 0x504
 
 %macro bppush 1

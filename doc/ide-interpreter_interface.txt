@@ -1,6 +1,7 @@
 Entry call:
 	SP: usable call stack, TOS being return address to IDE
 	BX: points to 0x8000, start of "source code" (with size).
+	CS:IP: 0:0x7E00
 
 Interpreter should preserve:
 	BX and BP register.
