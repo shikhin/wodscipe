@@ -20,3 +20,4 @@ API, directly callable after including `wodscipe.inc`:
 		in: DI: buffer
 		    CX: length of buffer
 		out: AX: number of chars read
+		WARNING: this method will fail if DS is not 0

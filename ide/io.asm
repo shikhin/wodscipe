@@ -55,6 +55,7 @@ getch:
 ; OUT:
 ;	AX -> chars read
 ; NOTE: do _not_ pass 0-byte buffers
+; NOTE: fails is DS is not 0
 getline:
 	pusha
 
