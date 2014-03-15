@@ -1,6 +1,12 @@
-Brainfuck interpreter is mostly pretty standard one (maybe except how loops are
-implemented) but does contain pretty nice debugger. To enable debugger
-uncomment the third line in `langs/brainfuck.asm`.
+The brainfuck interpreter is mostly a standard one, and all the commands
+supported are documented in the following table.
+
+Brainfuck works by having an infinitely large tape, and a pointer to a cell
+(8-byte cells in implementation) on the tape. You can increment/decrement
+the tape pointer, and the value of the cell. You can also output, get input,
+and loop.
+
+Representing the tape pointer via 'p', all brainfuck commands are:
 
 Command  Meaning
 +        *p++
@@ -11,3 +17,17 @@ Command  Meaning
 ,        c=getchar(); *p=(c>0?c:0);
 [        while(*p) {
 ]        }
+
+The particular implementation requires a completely valid program, with all
+[]s matched, and features no error detecting. Furthermore, the tape size is
+limited to 0xFFFF cells, and trying to go left from cell 0 amounts to going
+to the last cell. EOF is indicated by 0.
+
+The implementation contains a debugger as well. To enable debugger, uncomment
+
+	; %define enable_debugger
+
+in `langs/brainfuck.asm`. The debugger single steps through the entire program,
+and prints the following each iteration:
+
+	<current IP> <current command> <tape pointer> <cell contents as uint8>
