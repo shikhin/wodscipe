@@ -20,7 +20,7 @@ Command  Meaning
 
 The particular implementation requires a completely valid program, with all
 []s matched, and features no error detecting. Furthermore, the tape size is
-limited to 0xFFFF cells, and trying to go left from cell 0 amounts to going
+limited to 0x10000 cells, and trying to go left from cell 0 amounts to going
 to the last cell. EOF is indicated by 0.
 
 The implementation contains a debugger as well. To enable debugger, uncomment

@@ -1,7 +1,7 @@
 RPNcalc is a simple reverse polish notation (RPN) calculator. It is intended as
 a demonstration on how to write interpreters for wodscipe.
 
-RPNcalc has a stack of size 0xFFFF bytes, where each element takes 2 bytes. All
+RPNcalc has stack of size 0x10000 bytes, where each element takes 2 bytes. All
 elements are treated as unsigned, and no handling of overflow is present.
 
 Command  Meaning
