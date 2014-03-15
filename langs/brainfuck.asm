@@ -46,7 +46,7 @@ start:
 	; Tape & tape pointer
 	mov ax, 0x1000
 	mov es, ax
-	mov bp, 0
+	xor bp, bp
 	
 	; Zero tape
 	xor di, di
@@ -54,10 +54,10 @@ start:
 	xor al, al
 	rep stosb
 	
-	; Source
-	mov si, 0x8002
-	mov di, [0x8000]
-	add di, 0x8002
+	; SI points to source, DI to end.
+	lea si, [bx + 2]
+	mov di, si
+	add di, [bx]
 	
 	call interpret
 	
@@ -145,30 +145,26 @@ interpret:
 			mov cx, 1
 			
 			.skiploop:
-				jcxz .skipend
-				
 				lodsb
 				
-				cmp al, '['
-				je .deeper
 				cmp al, ']'
 				je .shallower
-				
-				jmp .skiploop
+				cmp al, '['
+				jne .skiploop
 				
 				.deeper:
 					inc cx
 					jmp .skiploop
 				.shallower:
-					dec cx
-					jmp .skiploop
-			.skipend:
-				jmp interpret
+					loop .skiploop
+
+			jmp interpret
+
 	.wend:
 		cmp al, ']'
 		jne interpret
 		
-		; Fall trough
+		; Fall through.
 	.end:
 		ret
 
