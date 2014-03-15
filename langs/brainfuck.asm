@@ -2,7 +2,9 @@
 org 0x7E00
 
 ; Uncomment following line to enable NorttiSoft singlestepping BF debugger deluxe
-; %define enable_debugger
+;%define enable_debugger
+
+free_space EQU 0x504
 
 %macro debugger 0
 	; Current IP
@@ -37,6 +39,11 @@ start:
 	pusha
 	push es
 
+	mov [free_space], sp
+	mov ax, 0x2000
+	mov ss, ax
+	xor sp, sp
+
 	; Tape & tape pointer
 	mov ax, 0x1000
 	mov es, ax
@@ -54,6 +61,10 @@ start:
 	add di, [bx]
 
 	call interpret
+
+	xor ax, ax
+	mov ss, ax
+	mov sp, [free_space]
 
 	pop es
 	popa
