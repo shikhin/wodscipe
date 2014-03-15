@@ -21,7 +21,7 @@ elsewhere. After cloning the repository, you can run:
 
     make
 
-The global environment variable `PROGLANG` is used to determine which
+The Makefile variable `PROGLANG` is used to determine which
 interpreter to assemble with support for. Supported languages are described
 below.
 
