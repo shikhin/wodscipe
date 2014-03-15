@@ -144,13 +144,16 @@ interpret:
 				cmp al, ']'
 				je .shallower
 				cmp al, '['
-				jne .skiploop
+				je .deeper
+
+				jmp .skiploop
 
 				.deeper:
 					inc cx
 					jmp .skiploop
 				.shallower:
-					loop .skiploop
+					dec cx
+					jnz .skiploop
 
 			jmp interpret
 
