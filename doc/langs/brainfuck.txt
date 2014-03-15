@@ -9,10 +9,10 @@ and loop.
 Representing the tape pointer via 'p', all brainfuck commands are:
 
 Command  Meaning
-+        *p++
--        *p--
->        p++
-<        p--
++        *p++;
+-        *p--;
+>        p++;
+<        p--;
 .        putchar(*p);
 ,        c=getchar(); *p=(c>0?c:0);
 [        while(*p) {
