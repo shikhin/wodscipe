@@ -1,5 +1,5 @@
 # Allowed values: rpncalc, brainfuck.
-PROGLANG ?= rpncalc
+PROGLANG ?= brainfuck
 MAKEDEPS  = Makefile
 CAT      ?= cat
 

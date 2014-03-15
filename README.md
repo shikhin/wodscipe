@@ -38,7 +38,7 @@ repository.
 ### Running
 
 The floppy image works with all major emulators, and any 1.44MiB floppy disk.
-As an example, `qemu-system-i386 -fda tetranglix.img` can be used to test it
+As an example, `qemu-system-i386 -fda wodscipe.img` can be used to test it
 via QEMU.
 
 ## Usage
