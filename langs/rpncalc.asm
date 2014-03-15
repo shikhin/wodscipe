@@ -87,7 +87,6 @@ main:
 
 			bppop ax
 
-			; High byte
 			call hexprint16
 
 			; Newline
