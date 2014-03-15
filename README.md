@@ -44,8 +44,11 @@ via QEMU.
 ## Usage
 
 Anyone familiar with `ed` wouldn't have much difficulty adapting to Wodscipe.
-The program can be run via `r`. Further documentation for the editor can be
-found in [editor.txt](doc/editor.txt), and rest of the IDE in [doc/](doc/).
+One notable quirk is that `a` and `i` only input one line at a time.
+The program can be run via `r`.
+
+Further documentation for the editor can be found in
+[editor.txt](doc/editor.txt), and rest of the IDE in [doc/](doc/).
 
 ## Supported Languages
 
