@@ -1,4 +1,5 @@
-PROGLANG ?= brainfuck
+# Allowed values: rpncalc, brainfuck.
+PROGLANG ?= rpncalc
 MAKEDEPS  = Makefile
 CAT      ?= cat
 
