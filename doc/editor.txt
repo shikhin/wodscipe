@@ -1,5 +1,8 @@
 Editor is ed-like, but highly cut-down. The program is read into memory at
-startup. On startup, editor starts at the first line.
+startup, and behaves as the front-end for the (arguably is mostly the) IDE.
+
+Editor starts with the first line being the current line. The table below
+describes all of the commands supported.
 
 NOTE: Unlike ed, 'a' and 'i' input only one line at a time.
 

@@ -1,7 +1,20 @@
-Tools are automatically built.
+Some common tools are provided to convert plaintext into the requisite binary
+format, and vice versa.
 
-tools/encode < plaintext > source.bin
-	Encodes program to source.bin format.
+encode:
+	Automatically built. Encodes program to source.bin format.
 
-tools/decode < source.bin > plaintext
-	Decodes program from source.bin format.
+	Usage:
+		tools/encode < plaintext > source.bin
+
+decode:
+	Automatically built. Decodes program from source.bin format.
+	
+	Usage:
+		tools/decode < source.bin > plaintext
+
+cat:
+	Build with `make cat`.
+
+	Behavior:
+		`cat` like.
