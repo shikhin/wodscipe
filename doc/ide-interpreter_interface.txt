@@ -1,12 +1,7 @@
 Entry call:
+	CS:IP: points to 0:0x7E00
 	SP: usable call stack, TOS being return address to IDE
 	BX: points to 0x8000, start of "source code" (with size)
-	CS:IP: 0:0x7E00
-
-Interpreter should preserve:
-	BX and BP registers
-	segment registers
-	suitable environment for the BIOS
 
 API, directly callable after including `wodscipe.inc`:
 	putchar:
@@ -21,3 +16,9 @@ API, directly callable after including `wodscipe.inc`:
 		    CX: length of buffer (!= 0)
 		out: AX: number of chars read
 		WARNING: this method will fail if DS is not 0
+
+Interpreter should preserve:
+	BX and BP registers
+	stack state (as passed by wodscIDE)
+	segment registers
+	suitable environment for the BIOS
