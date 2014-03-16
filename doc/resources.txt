@@ -1,2 +1,3 @@
 	* Brainfuck: http://esolangs.org/wiki/Brainfuck
 	* ///: http://esolangs.org/wiki/Slashes
+	* Deadfish: http://esolangs.org/wiki/Deadfish

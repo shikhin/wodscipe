@@ -55,8 +55,9 @@ Further documentation for the editor can be found in
 The following languages are supported, with further documentation in
 [doc/langs/](doc/langs/):
 
-* Brainfuck.
-* ///.
+* [Brainfuck.](http://esolangs.org/wiki/Brainfuck)
+* [///.](http://esolangs.org/wiki/Slashes)
+* [Deadfish.](http://esolangs.org/wiki/Deadfish)
 
 ## Extend Your Support
 

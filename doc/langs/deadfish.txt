@@ -1,0 +1,11 @@
+Deadfish is a very simple programming language that is good for nothing.
+
+Command  Meaning
+i / x    Increment
+d        Decrement
+s / k    Square
+o / c    Output
+
+All commands operate on the accumulator, which is in this implementation a 16b
+register. If accumulator becomes -1 (0xFFFF) or 256 (0x0100) it is set to 0.
+This is due to historical reasons.
