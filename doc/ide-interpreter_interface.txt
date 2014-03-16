@@ -7,7 +7,7 @@ API, directly callable after including `wodscipe.inc`:
 	putchar:
 		in: AL: char to output, uses unix newline
 	puts:
-		in: SI: ASCIZ string to output
+		in: DS:SI: ASCIZ string to output
 	getch:
 		out: AL: inputted char, uses unix newline
 		     AH: BIOS scan code for inputted char

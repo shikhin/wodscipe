@@ -95,8 +95,10 @@ memmove:
 
 	std
 
+	dec cx
 	add di, cx
 	add si, cx
+	inc cx
 
 	.forward:
 		rep movsb
@@ -137,7 +139,8 @@ substitute:
 	; We didn't find the string.
 	.not_found:
 		stc
-		jmp .ret
+		popa
+		ret
 
 	.replace:
 		pusha
@@ -154,9 +157,10 @@ substitute:
 
 	.found:
 		clc
-
-	.ret:
 		popa
+
+		sub cx, bx
+		add cx, dx
 		ret
 
 ; Finds the next slash.
@@ -203,6 +207,17 @@ get_next_slash:
 		clc
 		jmp .ret
 
+puts_debug:
+	pusha
+
+	.putc:
+		lodsb
+		call putchar
+		loop .putc
+
+	popa
+	ret
+
 ; Interpreter.
 interpret:
 	cmp si, cx
@@ -225,6 +240,8 @@ interpret:
 		cmp al, '/'
 		jne .print_char
 
+		mov di, 0x8000
+
 		call get_next_slash
 		jc .end
 
@@ -240,7 +257,6 @@ interpret:
 		xchg bx, dx
 
 		call remove_char
-
 		.loop:
 			call substitute
 			jnc .loop
