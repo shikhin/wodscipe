@@ -56,6 +56,7 @@ The following languages are supported, with further documentation in
 [doc/langs/](doc/langs/):
 
 * Brainfuck.
+* ///.
 
 ## Extend Your Support
 

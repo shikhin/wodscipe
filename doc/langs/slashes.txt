@@ -1,0 +1,40 @@
+/// (Slashes) is based on just the substitution command in sed, although it
+still is Turing-complete.
+
+The language is self-modifying, and follows the following execution loop:
+
+	* If first character is '\', the character which follows is printed.
+	  Both the characters are then removed, and execution starts over.
+	* If first character is '/', then the character is removed, and the
+	  following occurs:
+
+		PATTERN
+		+ If character read is '\', then it behaves just like in the
+		  outside loop, and adds the following character to the "pattern", 
+		  removing both from the program.
+		+ If character read is '/', then it's removed and replacement input
+		  starts.
+		+ If EOF encountered, then the program halts.
+		+ Otherwise, the character is added to the pattern and removed, and
+		  the next character is processed.
+
+		REPLACEMENT
+		+ If character read is '\', then it behaves just like in the
+		  outside loop, and adds the following character to the "replacement", 
+		  removing both from the program.
+		+ If character read is '/', then it's removed and substitution starts.
+		+ If EOF encountered, then the program halts.
+		+ Otherwise, the character is added to the replacement and removed, and
+		  the next character is processed.
+
+		SUBSTITUTION
+		+ The pattern is searched for in the program. If it is found, it is
+		  replaced via the replacement, and this step repeats.
+		+ If the pattern is found no more, execution continues.
+
+	* For every other character, it is printed and removed, and execution
+	  continues.
+
+The particular implementation limits the maximum size of the program to 0xC000
+bytes, including any extensions after substitution. The maximum size of the
+"pattern" and "replacement" text, together, is 0x4000 bytes.
