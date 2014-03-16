@@ -19,7 +19,7 @@ start:
 	mov cx, [bx]
 	rep movsb
 
-	; SI points to source, CX contains length (or end).
+	; SI is cleared out, CX contains length.
 	xor si, si
 	mov cx, [bx]
 
@@ -33,21 +33,23 @@ start:
 	popa
 	ret
 
-; Removes the character before SI.
+; Removes the first character.
 ; IN:
-;	SI -> character from which to move one behind.
+;	SI -> 1
 ;	CX -> end of source.
 ; OUT:
-;	SI -> SI - 1
+;	SI -> 0
 ;	CX -> CX - 1
 remove_char:
 	pusha
 
-	lea di, [si - 1]
-	sub cx, si
+	xor di, di
+	dec cx
 	rep movsb
 
 	popa
+
+	; Update SI and CX.
 	dec si
 	dec cx
 	ret
@@ -62,7 +64,6 @@ memcmp:
 	pusha
 
 	mov cx, bx
-
 	.loop:
 		jcxz .equal
 		lodsb
@@ -95,11 +96,13 @@ memmove:
 
 	std
 
+	; Copy backwards.
 	dec cx
 	add di, cx
 	add si, cx
 	inc cx
 
+	; Straight-forward copy.
 	.forward:
 		rep movsb
 
@@ -107,14 +110,12 @@ memmove:
 	popa
 	ret
 
-; Substitute one string from another in source.
+; Substitute one string from another in source, as per governing dynamics.
 ; IN:
 ;	DI -> string to replace.
 ;	BX -> length of string.
 ;	AX -> string to replace with.
 ;	DX -> length of string to replace with.
-; OUT:
-;	Carry flag set if not found.
 substitute:
 	pusha
 
@@ -138,11 +139,11 @@ substitute:
 
 	; We didn't find the string.
 	.not_found:
-		stc
 		popa
 		ret
 
 	.replace:
+		; Make space for the new pattern.
 		pusha
 		mov di, si
 		add si, bx
@@ -150,18 +151,18 @@ substitute:
 		call memmove
 		popa
 
+		; Replace it in there.
 		mov di, si
 		mov si, ax
 		mov cx, dx
 		rep movsb
 
+	; If found, we need to try again.
 	.found:
-		clc
 		popa
-
 		sub cx, bx
 		add cx, dx
-		ret
+		jmp substitute
 
 ; Finds the next slash.
 ; IN:
@@ -207,21 +208,10 @@ get_next_slash:
 		clc
 		jmp .ret
 
-puts_debug:
-	pusha
-
-	.putc:
-		lodsb
-		call putchar
-		loop .putc
-
-	popa
-	ret
-
 ; Interpreter.
 interpret:
-	cmp si, cx
-	je .end
+	test cx, cx
+	jz .end
 
 	lodsb
 
@@ -230,8 +220,8 @@ interpret:
 		jne .forward_slash
 
 		call remove_char
-		cmp si, cx
-		je .end
+		test cx, cx
+		jz .end
 
 		lodsb
 		jmp .print_char
@@ -240,37 +230,34 @@ interpret:
 		cmp al, '/'
 		jne .print_char
 
-		mov di, 0x8000
+		; Free space from pattern+replacement buffer.
+		mov di, 0xC000
 
 		call get_next_slash
 		jc .end
 
-		; DI -> string to replace, BX -> length of string.
+		; Save DI, BX in AX, DX.
 		mov ax, di
 		mov dx, bx
 
-		add di, dx
-		; AX -> string to replace, DX -> length of string.
+		; Save replacement string at DI + BX.
+		add di, bx
 		call get_next_slash
 		jc .end
+
+		; Retain the order.
 		xchg di, ax
 		xchg bx, dx
 
 		call remove_char
-		.loop:
-			call substitute
-			jnc .loop
+		call substitute
 
-		xor si, si
 		jmp interpret
 
 	.print_char:
 		call putchar
 		call remove_char
-		xor si, si
+		jmp interpret
 
-	jmp interpret
-
-	; Fall through.
 	.end:
 		ret
