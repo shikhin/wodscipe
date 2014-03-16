@@ -55,13 +55,13 @@ remove_char:
 ; Compares N bytes.
 ; IN:
 ;	SI, DI -> input.
-;	AX -> N.
+;	BX -> N.
 ; OUT:
 ;	Carry flag set if unequal.
 memcmp:
 	pusha
 
-	mov cx, ax
+	mov cx, bx
 
 	.loop:
 		jcxz .equal
@@ -73,14 +73,14 @@ memcmp:
 		inc di
 		loop .loop
 
-	.unequal:
-		stc
+	.equal:
+		clc
 	.ret:
 		popa
 		ret
 
-	.equal:
-		clc
+	.unequal:
+		stc
 		jmp .ret
 
 ; IN:
@@ -108,42 +108,47 @@ memmove:
 ; Substitute one string from another in source.
 ; IN:
 ;	DI -> string to replace.
-;	AX -> length of string.
-;	BX -> string to replace with.
+;	BX -> length of string.
+;	AX -> string to replace with.
 ;	DX -> length of string to replace with.
 ; OUT:
 ;	Carry flag set if not found.
 substitute:
 	pusha
 
-	cmp cx, ax
+	; If total length < length of string to find, then fail.
+	cmp cx, bx
 	jb .not_found
 
-	sub cx, ax
+	; Else, note that it's futile to search last BX bytes.
+	sub cx, bx
 	inc cx
 
+	; Start searching from beginning, CX times.
 	xor si, si
 	.search:
+		; If found the string, replace it.
 		call memcmp
 		jnc .replace
 
 		inc si
 		loop .search
 
+	; We didn't find the string.
 	.not_found:
-		xchg bx, bx
 		stc
 		jmp .ret
 
 	.replace:
 		pusha
 		mov di, si
-		add si, ax
-		add di, bx
+		add si, bx
+		add di, dx
+		call memmove
 		popa
 
 		mov di, si
-		mov si, bx
+		mov si, ax
 		mov cx, dx
 		rep movsb
 
@@ -175,6 +180,15 @@ get_next_slash:
 		cmp al, '/'
 		je .finished
 
+		cmp al, '\'
+		jne .elem
+
+		call remove_char
+		cmp si, cx
+		je .no_more_slashes
+
+		lodsb
+	.elem:
 		mov [di + bx], al
 		inc bx
 		jmp .loop 
@@ -213,16 +227,19 @@ interpret:
 
 		call get_next_slash
 		jc .end
+
 		; DI -> string to replace, BX -> length of string.
-		xchg di, ax
-		xchg bx, dx
+		mov ax, di
+		mov dx, bx
+
+		add di, dx
 		; AX -> string to replace, DX -> length of string.
 		call get_next_slash
 		jc .end
-		; DI -> string to replace with, BX -> length of string to replace with.
-		xchg bx, di ; BX = correct, DI = length of string to replace with.
-		xchg di, dx ; DX = correct, DI = length of string.
 		xchg di, ax
+		xchg bx, dx
+
+		call remove_char
 
 		.loop:
 			call substitute
