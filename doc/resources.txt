@@ -1,0 +1,2 @@
+	* Brainfuck: http://esolangs.org/wiki/Brainfuck
+	* ///: http://esolangs.org/wiki/Slashes
