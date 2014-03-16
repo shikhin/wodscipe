@@ -78,9 +78,10 @@ mainloop:
 		mov bp, dx ; Restore data stack pointer
 
 		jmp mainloop
+
 	.print:
 		cmp al, 'S'
-		jne mainloop
+		jne .drop
 
 		.printloop:
 			mov al, [es:bp]
@@ -92,6 +93,19 @@ mainloop:
 			call putchar
 
 			jmp .printloop
+
+	.drop:
+		cmp al, '!'
+		jne mainloop
+
+		.droploop:
+			mov al, [es:bp]
+			inc bp
+
+			test al, al
+			jz mainloop
+
+			jmp .droploop
 
 end:
 	mov al, 10
