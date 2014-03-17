@@ -38,3 +38,6 @@ The language is self-modifying, and follows the following execution loop:
 The particular implementation limits the maximum size of the program to 0xC000
 bytes, including any extensions after substitution. The maximum size of the
 "pattern" and "replacement" text, together, is 0x4000 bytes.
+
+The current implementation takes 222B, and the sign was rightly interpreted
+as a message from the Lord, our saviour, congratulating us on our efforts.
