@@ -120,9 +120,8 @@ mainloop:
 		cmp al, '~'
 		jne .enclose
 
-		call elementlen
-
 		; Move first element to a temporary location
+		call elementlen
 		mov bx, bp
 		mov di, bp
 		sub di, cx
@@ -134,16 +133,17 @@ mainloop:
 
 		; Move second element where first used to live
 		mov di, bx
-		add bp, cx
 		mov bx, bp
-		sub bp, cx
+		add bp, cx
 		call elementlen
+		xchg bx, bp ; bx=ptr2 bp=ptr1
 		call stack_memcpy
 
 		; Move first element where second used to live
-		mov di, bx
+		mov di, bp
+		add di, cx
 		mov bx, ax
-		mov dx, dx
+		mov cx, dx
 		call stack_memcpy
 
 		jmp mainloop
