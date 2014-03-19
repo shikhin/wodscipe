@@ -1,3 +1,4 @@
 (foobar )(barbaz )~SS
 (a(b)c)(d)(e)S!S
-( f):SS
+( f):SS(
+)S(qux):S:aS:aaS!

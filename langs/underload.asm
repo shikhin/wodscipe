@@ -118,7 +118,7 @@ mainloop:
 
 	.swap:
 		cmp al, '~'
-		jne mainloop
+		jne .enclose
 
 		call elementlen
 
@@ -145,6 +145,30 @@ mainloop:
 		mov bx, ax
 		mov dx, dx
 		call stack_memcpy
+
+		jmp mainloop
+
+	.enclose:
+		cmp al, 'a'
+		jne mainloop
+
+		; Shift down one to provide space for ending bracket
+		call elementlen
+		mov bx, bp
+		dec bp
+		mov di, bp
+		call stack_memcpy
+
+		; Starting bracket
+		dec bp
+		mov byte [es:bp], '('
+
+		; Ending bracket
+		mov bx, bp
+		add bx, cx
+		mov byte [es:bx], ')'
+
+		; NOTE: it will be already null-terminated as it was copied down by one, leaving original terminator after end of element
 
 		jmp mainloop
 
