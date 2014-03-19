@@ -104,7 +104,7 @@ mainloop:
 
 	.dup:
 		cmp al, ':'
-		jne mainloop
+		jne .swap
 
 		mov bx, bp
 		call elementlen
@@ -112,6 +112,38 @@ mainloop:
 		sub bp, cx
 		mov di, bp
 
+		call stack_memcpy
+
+		jmp mainloop
+
+	.swap:
+		cmp al, '~'
+		jne mainloop
+
+		call elementlen
+
+		; Move first element to a temporary location
+		mov bx, bp
+		mov di, bp
+		sub di, cx
+		call stack_memcpy
+
+		; Save (ptr,len) of first element to (ax,dx)
+		mov ax, di
+		mov dx, cx
+
+		; Move second element where first used to live
+		mov di, bx
+		add bp, cx
+		mov bx, bp
+		sub bp, cx
+		call elementlen
+		call stack_memcpy
+
+		; Move first element where second used to live
+		mov di, bx
+		mov bx, ax
+		mov dx, dx
 		call stack_memcpy
 
 		jmp mainloop
