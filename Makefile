@@ -1,5 +1,5 @@
 # Allowed values: rpncalc, brainfuck, slashes, deadfish.
-PROGLANG ?= multipret
+PROGLANG ?= underload
 MAKEDEPS  = Makefile
 CAT      ?= cat
 

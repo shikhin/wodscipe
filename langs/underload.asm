@@ -96,16 +96,25 @@ mainloop:
 
 	.drop:
 		cmp al, '!'
+		jne .dup
+
+		call elementlen
+		add bp, cx
+		jmp mainloop
+
+	.dup:
+		cmp al, ':'
 		jne mainloop
 
-		.droploop:
-			mov al, [es:bp]
-			inc bp
+		mov bx, bp
+		call elementlen
 
-			test al, al
-			jz mainloop
+		sub bp, cx
+		mov di, bp
 
-			jmp .droploop
+		call stack_memcpy
+
+		jmp mainloop
 
 end:
 	mov al, 10
@@ -118,3 +127,49 @@ end:
 	popa
 
 	ret
+
+; IN:
+;	ES:BP -> pointer to stack element
+; OUT:
+;	CX -> length of element (counting the terminating NULL)
+elementlen:
+	push ax
+	push bp
+
+	mov dx, bp
+
+	.loop:
+		mov al, [es:bp]
+		inc bp
+
+		test al, al
+		jnz .loop
+
+	mov cx, bp
+	sub cx, dx
+
+	pop bp
+	pop ax
+
+	ret
+
+; IN:
+;	ES:BX -> source
+;	ES:DI -> destination
+;	CX    -> how many bytes to copy
+stack_memcpy:
+	pusha
+
+	.loop:
+		jcxz .end
+		dec cx
+
+		mov al, [es:bx]
+		inc bx
+
+		stosb
+
+		jmp .loop
+	.end:
+		popa
+		ret
