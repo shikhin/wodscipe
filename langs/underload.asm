@@ -149,7 +149,7 @@ mainloop:
 
 	.enclose:
 		cmp al, 'a'
-		jne mainloop
+		jne .exec
 
 		; Shift down one to provide space for ending bracket
 		call elementlen
@@ -170,6 +170,29 @@ mainloop:
 		; NOTE: it will be already null-terminated as it was copied down by one, leaving original terminator after end of element
 
 		jmp mainloop
+
+	.exec:
+		cmp al, '^'
+		jne mainloop
+
+		call elementlen
+		sub si, cx
+		inc si
+		mov bx, si
+
+		.exec_copyloop:
+			mov al, [es:bp]
+			inc bp
+
+			test al, al
+			jz .exec_end
+
+			mov [bx], al
+			inc bx
+
+			jmp .exec_copyloop
+		.exec_end:
+			jmp mainloop
 
 end:
 	mov al, 10
