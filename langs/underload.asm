@@ -133,13 +133,12 @@ mainloop:
 
 		; Move second element where first used to live
 		mov di, bx
-		mov bx, bp
 		add bp, cx
 		call elementlen
-		xchg bx, bp ; bx=ptr2 bp=ptr1
+		xchg bx, bp
 		call stack_memcpy
 
-		; Move first element where second used to live
+		; Move first element after where the second element now is
 		mov di, bp
 		add di, cx
 		mov bx, ax
