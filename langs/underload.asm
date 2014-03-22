@@ -212,6 +212,7 @@ end:
 ;	CX -> length of element (counting the terminating NULL)
 elementlen:
 	push ax
+	push dx
 	push bp
 
 	mov dx, bp
@@ -227,6 +228,7 @@ elementlen:
 	sub cx, dx
 
 	pop bp
+	pop dx
 	pop ax
 
 	ret
