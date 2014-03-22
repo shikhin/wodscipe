@@ -1,0 +1,13 @@
+Underload is a stack-based esoteric programming language that unfortunately
+lacks input. Its flow control operators are limited to ^ (exec) which makes
+programming on it quite interesting.
+
+Command  Stack effect       Note
+~        (x) (y) - (y) (x)
+:        (x)     - (x) (x)
+!        (x)     -
+*        (x) (y) - (xy)
+(x)              - (x)
+a        (x)     - ((x))
+^        (x)     -          Executes the stack element
+S        (x)     -          Outputs the stack element
