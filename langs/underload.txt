@@ -1,12 +1,1 @@
-(foobar )(barbaz )~SS
-(a(b)c)(d)(e)S!S
-( f):SS(
-)S(qux):S:aS:aaS!(
-)S((the insane is with us!)S)^
-
-(
-)S (aa)(b)*S(
-)S (a)(bb)*S(
-)S (a)(bb)(ccc)**S(
-)S (aaa)(bb)(c)**S(
-)S
+(Hello, world!)S
