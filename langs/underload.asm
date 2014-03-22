@@ -173,7 +173,7 @@ mainloop:
 
 	.exec:
 		cmp al, '^'
-		jne mainloop
+		jne .concat
 
 		call elementlen
 		sub si, cx
@@ -193,6 +193,39 @@ mainloop:
 			jmp .exec_copyloop
 		.exec_end:
 			jmp mainloop
+
+	.concat:
+		cmp al, '*'
+		jne mainloop
+
+		; Move first element to a temporary location
+		call elementlen
+		mov bx, bp
+		mov di, bp
+		sub di, cx
+		call stack_memcpy
+
+		; Save (ptr,len) of first element to (ax,dx)
+		mov ax, di
+		mov dx, cx
+
+		; Move second element one byte after where first used to live
+		inc bx
+		mov di, bx
+		add bp, cx
+		call elementlen
+		xchg bx, bp
+		call stack_memcpy
+
+		; Move first element partially on top of second element, overwriting the null-terminator
+		mov di, bp
+		add di, cx
+		dec di
+		mov bx, ax
+		mov cx, dx
+		call stack_memcpy
+
+		jmp mainloop
 
 end:
 	mov al, 10
