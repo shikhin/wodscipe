@@ -58,7 +58,7 @@ The following languages are supported, with further documentation in
 * [Brainfuck.](http://esolangs.org/wiki/Brainfuck)
 * [///.](http://esolangs.org/wiki/Slashes)
 * [Deadfish.](http://esolangs.org/wiki/Deadfish)
-* [Underload.]](http://esolangs.org/wiki/Underload)
+* [Underload.](http://esolangs.org/wiki/Underload)
 
 ## Extend Your Support
 
@@ -66,6 +66,9 @@ The success of the project heavily depends on your valuable support.
 
 To free all developers from the tyranny of existing IDEs, start by recommending
 this one to whomsoever you know. Furthermore, star and fork us on GitHub.
+
+Once you've done that, go a step further and add another language to the
+Supported Languages list.
 
 ## Authors
 
