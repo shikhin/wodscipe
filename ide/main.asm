@@ -10,15 +10,18 @@ CPU 386
 ; OUT:
 ;	Fairies and unicorns.
 start:
-	jmp 0x0:.segsetup
+	jmp 0x0:segsetup
 
 	; Jump table
-	jmp word putchar
-	jmp word puts
-	jmp word getch
-	jmp word getline
+	jmp putchar
+	jmp puts
+	jmp getch
+	jmp getline
 
-	.segsetup:
+%include "io.asm"
+%include "disk.asm"
+
+	segsetup:
 		xor ax, ax
 
 		mov ss, ax
@@ -43,9 +46,6 @@ start:
 
 ; The editor continues.
 %include "editor.asm"
-
-%include "io.asm"
-%include "disk.asm"
 
 times 510-($-$$) db 0
 dw 0xAA55

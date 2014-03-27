@@ -1,4 +1,4 @@
 putchar EQU 0x7C05
-puts    EQU 0x7C08
-getch   EQU 0x7C0B
-getline EQU 0x7C0E
+puts    EQU 0x7C07
+getch   EQU 0x7C09
+getline EQU 0x7C0B
