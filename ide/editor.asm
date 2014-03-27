@@ -31,11 +31,9 @@ editor:
 		mov cx, 0x50
 		call getline
 
-		cmp al, 0
-		je .cmdnext
-
-		cmp al, 1 ; All commands are 1 char
-		jne .error
+		cmp al, 1
+		jb .cmdnext	; 0.
+		jne .error	; 1 char commands.
 
 		.checkcmd:
 			mov al, [di]
