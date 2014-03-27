@@ -57,7 +57,8 @@ getch:
 ; NOTE: do _not_ pass 0-byte buffers
 ; NOTE: fails if DS is not 0
 getline:
-	pusha
+	push bx
+	push di
 
 	dec cx
 	xor bx, bx
@@ -85,8 +86,10 @@ getline:
 			test bx, bx
 			jz .readloop
 
+			push si
 			mov si, .del_string
 			call puts
+			pop si
 
 			dec bx
 			dec di
@@ -101,7 +104,9 @@ getline:
 		stosb
 
 		; STORE AX.
-		mov [esp + 14], bx
+		mov ax, bx
+		inc cx
 
-		popa
+		pop di
+		pop bx
 		ret

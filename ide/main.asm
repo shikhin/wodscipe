@@ -22,7 +22,7 @@ start:
 		xor ax, ax
 
 		mov ss, ax
-		mov esp, start
+		mov sp, start
 
 		mov ds, ax
 		mov es, ax
@@ -47,7 +47,7 @@ start:
 %include "io.asm"
 %include "disk.asm"
 
-;times 510-($-$$) db 0
+times 510-($-$$) db 0
 dw 0xAA55
 
 interpreter:
