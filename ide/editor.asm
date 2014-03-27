@@ -6,22 +6,19 @@
 editor:
 	.loadsource:
 		lea bp, [bx + 2] ; Current start-of-line
+		mov dx, bp
+		add dx, [bx]
 
 	.rw_source:
-		; How many sectors to read/write.
-		; (len + 2 + 511)/512 -> (len + 1)/512 + 1
-		mov cx, [bx]
-		inc cx
-		shr cx, 9
-		inc cx
-
 		push bx
 		.writeloop:
 			call rwsector
 
 			inc ax
 			add bx, 0x200
-			loop .writeloop
+			cmp bx, dx
+			jb .writeloop
+
 		pop bx
 
 	.mainloop:
@@ -48,8 +45,7 @@ editor:
 				push di
 
 				; Get bytes following bp = last "address" - bp.
-				lea cx, [bx + 2]
-				add cx, [bx]
+				mov cx, dx
 				sub cx, bp
 
 				; Copy from BP to (BP + AX + 1), but reversed (as overlap).
@@ -75,6 +71,7 @@ editor:
 				; Update file length.
 				inc ax
 				add [bx], ax
+				add dx, ax
 
 				mov al, 10
 				stosb
@@ -99,9 +96,6 @@ editor:
 				; Find next newline.
 				call next_newline
 
-				; next_newline calls to is_bufend at least once,
-				; which puts bx + 2 + [bx] into dx.
-
 				; Get number of bytes from next line to end.
 				mov cx, dx
 				sub cx, si
@@ -109,13 +103,15 @@ editor:
 				; Remove size of current line from [bx].
 				sub [bx], si
 				add [bx], bp
+				sub dx, si
+				add dx, bp
 
 				mov di, bp
 				rep movsb
 
 				; If at end of buffer, go to line before.
 				mov si, bp
-				call is_bufend
+				cmp dx, si
 				ja .deleted
 
 				call prev_newline
@@ -165,7 +161,7 @@ editor:
 			; Next
 			.cmdnext:
 				call next_newline
-				call is_bufend
+				cmp dx, si
 				jz .error
 
 				mov bp, si
@@ -177,8 +173,7 @@ editor:
 			; Last
 			.cmdlast:
 				; Find the previous line from EOF.
-				lea bp, [bx + 2]
-				add bp, [bx]
+				mov bp, dx
 				jmp .cmdprevious
 
 		.previous:
@@ -228,18 +223,6 @@ editor:
 
 	.errormsg: db '?', 10, 0
 
-; Is end of buffer?
-; IN:
-;	SI -> pointer
-; OUT:
-; 	ZF -> 1, end of buffer, else not.
-;	DX -> bx + 2 + [bx]
-is_bufend:
-	lea dx, [bx + 2]
-	add dx, [bx]
-	cmp dx, si
-	ret
-
 ; Find previous line.
 ; IN:
 ;	BP -> buffer
@@ -277,7 +260,7 @@ next_newline:
 	mov si, bp
 	.loop:
 		; If reached start/end of buffer
-		call is_bufend
+		cmp dx, si
 		jbe .end
 
 		lodsb
