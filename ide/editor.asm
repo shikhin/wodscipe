@@ -42,18 +42,19 @@ editor:
 			.cmdinsert:
 				; cx & di already set above
 				call getline
+				inc ax
+
 				push di
 
 				; Get bytes following bp = last "address" - bp.
 				mov cx, dx
 				sub cx, bp
 
-				; Copy from BP to (BP + AX + 1), but reversed (as overlap).
+				; Copy from BP to (BP + AX), but reversed (as overlap).
 				mov si, bp
 				add si, cx
 				mov di, si
 				add di, ax
-				inc di
 
 				inc cx
 
@@ -69,13 +70,10 @@ editor:
 				rep movsb
 
 				; Update file length.
-				inc ax
 				add [bx], ax
 				add dx, ax
 
-				mov al, 10
-				stosb
-
+				mov byte [di - 1], 10
 				xor al, al
 
 		.append:
@@ -110,8 +108,7 @@ editor:
 				rep movsb
 
 				; If at end of buffer, go to line before.
-				mov si, bp
-				cmp dx, si
+				cmp dx, bp
 				ja .deleted
 
 				call prev_newline
@@ -228,34 +225,27 @@ editor:
 ;	BP -> buffer
 ; OUT:
 ;	BP -> previous line, or start of buffer
+;	Trashes CX.
 prev_newline:
-	dec bp
-	cmp bp, 0x8003
+	mov cx, bp
+	mov bp, 0x8002
 
-	jae .find_prevline
-	mov bp, 0x8003
+	.find_nextline:
+		call next_newline
+		cmp si, cx
+		jae .ret
 
-	.find_prevline:
-		.loop:
-			dec bp
-			; If reached start/end of buffer
-			cmp bp, 0x8002
-			jbe .ret
+		mov bp, si
+		jmp .find_nextline
 
-			cmp [bp], byte 10
-			jne .loop
-
-		.end:
-			inc bp
-		.ret:
-			ret
+	.ret:
+		ret
 
 ; Find next line.
 ; IN:
 ;	BP -> buffer
 ; OUT:
 ;	SI -> next/previous line, or end/start of buffer
-;	DX -> bx + 2 + [bx]
 next_newline:
 	mov si, bp
 	.loop:
