@@ -30,7 +30,7 @@ editor:
 
 		cmp al, 1
 		jb .cmdnext	; 0.
-		jne .error	; 1 char commands.
+		jne .gotoline
 
 		.checkcmd:
 			mov al, [di]
@@ -207,6 +207,37 @@ editor:
 		.nomatch:
 			test al, al
 			jz .mainloop
+
+			mov al, 1
+
+	.gotoline:
+		mov si, di
+		xor cx, cx
+		.atoi:
+			lodsb
+			test al, al
+			jz .gotosetup
+
+			mov di, cx
+			shl cx, 3
+			shl di, 1
+			add cx, di
+
+			sub al, '0'
+			cmp al, 9
+			ja .error
+			xor ah, ah
+			add cx, ax
+			jmp .atoi
+
+		.gotosetup:
+			xor bp, bp
+
+		.gotoloop:
+			jcxz .mainloop
+			call next_newline
+			dec cx
+			jmp .gotoloop
 
 	.error:
 		mov si, .errormsg
