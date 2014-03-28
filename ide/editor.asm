@@ -107,13 +107,8 @@ editor:
 				mov di, bp
 				rep movsb
 
-				; If at end of buffer, go to line before.
-				cmp dx, bp
-				ja .deleted
-
 				call prev_newline
-				.deleted:
-					xor al, al
+				xor al, al
 
 		.print:
 			cmp al, 'p'
