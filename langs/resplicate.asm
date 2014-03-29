@@ -1,6 +1,7 @@
 %include "wodscipe.inc"
 org 0x7E00
 numimp_flag equ 0x504
+minus_flag equ 0x505
 
 start:
 	pusha
@@ -30,6 +31,9 @@ parse:
 	lodsb
 	dec cx
 
+	cmp al, '-'
+	je .minus
+
 	cmp al, '0'
 	jb .notdigit
 	
@@ -56,15 +60,28 @@ parse:
 		cmp byte [numimp_flag], 0
 		je parse
 
+		cmp byte [minus_flag], 1
+		jne .save
+
+		; Two's complement negation
+		not dx
+		inc dx
+
 		; Find end of ring buffer and expand it by 2 bytes and save inputted number
-		mov bx, di
-		add di, 2
-		mov [es:bx], dx
+		.save:
+			mov bx, di
+			add di, 2
+			mov [es:bx], dx
 
 		; Reset the number input state
 		xor dx, dx
 		mov byte [numimp_flag], 0
+		mov byte [minus_flag], 0
 
+		jmp parse
+
+	.minus:
+		mov byte [minus_flag], 1
 		jmp parse
 
 run:
@@ -72,9 +89,13 @@ run:
 	je end
 
 	mov bx, [es:bp]
+	sub di, 2
+	cmp di, 0
+	je end
+
 	mov cx, [es:bp+2]
 	add bp, 4
-	sub di, 4
+	sub di, 2
 
 	cmp bx, 0
 	je .io
@@ -119,6 +140,18 @@ run:
 			jmp run
 
 		.in:
+			call getch
+			call putchar
+			xor ah, ah
+			add ax, cx
+			inc ax
+
+			mov bx, bp
+			add bx, di
+			mov [es:bx], ax
+
+			add di, 2
+
 			jmp run
 
 end:
@@ -151,5 +184,3 @@ copybytes:
 	.end:
 		popa
 		ret
-
-%include "hexprint.inc"
