@@ -1,5 +1,5 @@
 # Allowed values: rpncalc, brainfuck, slashes, deadfish, underload.
-PROGLANG ?= rpncalc
+PROGLANG ?= resplicate
 MAKEDEPS  = Makefile
 CAT      ?= cat
 

@@ -68,16 +68,6 @@ parse:
 		jmp parse
 
 run:
-		pusha
-		mov ax, bp
-		call hexprint16
-		mov al, ' '
-		call putchar
-		mov ax, di
-		call hexprint16
-		mov al, 10
-		call putchar
-		popa
 	cmp di, 0
 	je end
 
@@ -89,6 +79,7 @@ run:
 	cmp bx, 0
 	je .io
 
+	shl bx, 1
 	; bx>di
 	mov si, bp
 	add si, di
