@@ -5,9 +5,10 @@ Editor starts with the first line being the current line. The table below
 describes all of the commands supported.
 
 NOTE: Unlike ed, 'a' and 'i' input only one line at a time.
-NOTE: Gotoline is very hacky so it caps out at 255 and doesn't hadle error
-      conditions correctly. It also doesn't automatically print the line it has
-      moved to.
+NOTE: Gotoline is very hacky so it caps out at 255 and doesn't handle error
+      conditions correctly. If gotoline is used to go to a line number greater
+      than total lines in the file, the "current line" becomes end-of-file.
+      That situation, though, is correctly handled by other commands.
 
 Command     Name       Explanation
 +, newline  Next       Move to next line and output it

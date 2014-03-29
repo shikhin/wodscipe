@@ -56,7 +56,7 @@ editor:
 				jcxz .error
 				dec cx
 			.gotoloop:
-				jcxz .mainloop
+				jcxz .cmdprint
 				call next_newline
 				mov bp, si
 				dec cx
