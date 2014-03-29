@@ -154,6 +154,7 @@ end:
 
 	pop es
 	popa
+	xor al, al
 	ret
 
 endmsg: db 'end', 10, 0

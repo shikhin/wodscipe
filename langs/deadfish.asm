@@ -97,4 +97,5 @@ mainloop:
 	call putchar
 
 	popa
+	xor al, al
 	ret

@@ -182,7 +182,6 @@ editor:
 			; Run
 			.cmdrun:
 				call interpreter
-				;xor al, al
 
 		.next:
 			cmp al, '+'

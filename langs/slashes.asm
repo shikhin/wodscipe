@@ -31,6 +31,7 @@ start:
 	pop ds
 	pop es
 	popa
+	xor al, al
 	ret
 
 ; Removes the first character.
@@ -220,8 +221,7 @@ interpret:
 		jne .forward_slash
 
 		call remove_char
-		test cx, cx
-		jz .end
+		jcxz .end
 
 		lodsb
 		jmp .print_char

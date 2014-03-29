@@ -68,6 +68,7 @@ start:
 
 	pop es
 	popa
+	xor al, al
 	ret
 
 interpret:
