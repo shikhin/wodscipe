@@ -24,4 +24,4 @@ Interpreter should preserve:
 	suitable environment for the BIOS
 
 Return:
-	AL should be zeroed out, to work around kludges in WodscIDE
+	AL: Return code. 0 for success, non-zero for error
