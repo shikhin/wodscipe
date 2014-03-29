@@ -59,6 +59,7 @@ The following languages are supported, with further documentation in
 * [///.](http://esolangs.org/wiki/Slashes)
 * [Deadfish.](http://esolangs.org/wiki/Deadfish)
 * [Underload.](http://esolangs.org/wiki/Underload)
+* [ResPlicate.](http://esolangs.org/wiki/ResPlicate)
 
 ## Extend Your Support
 

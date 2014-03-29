@@ -1,0 +1,8 @@
+ResPlicate is a self-modifying automation thingie. On each cycle 2 numbers are
+dequeued and interpreted in following fashion:
+elements-to-dequeue how-many-times-to-enqueue-those
+
+This implementation also supports the I/O expansion.
+putchar: 0 ascii-code
+getchar: 0 -n
+         Where getchar()-n+1 is then enqueued.
