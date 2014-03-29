@@ -29,8 +29,45 @@ editor:
 		call getline
 
 		cmp al, 1
-		jb .cmdnext	; 0.
-		jne .gotoline
+		jb .cmdnext
+		je .checkcmd
+
+		.gotoline:
+			mov si, di
+			xor ax, ax
+
+			.atoi:
+				lodsb
+				test al, al
+				jz .gotosetup
+
+				sub al, '0'
+				cmp al, 9
+				ja .error
+
+				aad
+				xchg ah, al
+				jmp .atoi
+
+			.gotosetup:
+				mov bp, 0x8002
+
+				movzx cx, ah
+				jcxz .error
+				dec cx
+			.gotoloop:
+				jcxz .mainloop
+				call next_newline
+				mov bp, si
+				dec cx
+				jmp .gotoloop
+
+	.error:
+		mov si, .errormsg
+		call puts
+		jmp .mainloop
+
+	.errormsg: db '?', 10, 0
 
 		.checkcmd:
 			mov al, [di]
@@ -145,7 +182,7 @@ editor:
 			; Run
 			.cmdrun:
 				call interpreter
-				xor al, al
+				;xor al, al
 
 		.next:
 			cmp al, '+'
@@ -170,21 +207,13 @@ editor:
 
 		.previous:
 			cmp al, '-'
-			jne .first
+			jne .list
 			; Previous
 			.cmdprevious:
 				cmp bp, 0x8002
 				je .error
 
 				call prev_newline
-				jmp .cmdprint
-
-		.first:
-			cmp al, '1'
-			jne .list
-			; First
-			.cmdfirst:
-				lea bp, [bx + 2]
 				jmp .cmdprint
 
 		.list:
@@ -206,45 +235,8 @@ editor:
 
 		.nomatch:
 			test al, al
-			jz .mainloop
-
-			mov al, 1
-
-	.gotoline:
-		mov si, di
-		xor cx, cx
-		.atoi:
-			lodsb
-			test al, al
-			jz .gotosetup
-
-			mov di, cx
-			shl cx, 3
-			shl di, 1
-			add cx, di
-
-			sub al, '0'
-			cmp al, 9
-			ja .error
-			xor ah, ah
-			add cx, ax
-			jmp .atoi
-
-		.gotosetup:
-			xor bp, bp
-
-		.gotoloop:
-			jcxz .mainloop
-			call next_newline
-			dec cx
-			jmp .gotoloop
-
-	.error:
-		mov si, .errormsg
-		call puts
-		jmp .mainloop
-
-	.errormsg: db '?', 10, 0
+			jnz .gotoline
+			jmp .mainloop
 
 ; Find previous line.
 ; IN:
