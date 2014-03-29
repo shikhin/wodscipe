@@ -169,19 +169,12 @@ editor:
 
 		.write:
 			cmp al, 'w'
-			jne .run
+			jne .next
 			; Write
 			.cmdwrite:
 				mov ax, 2
 				mov di, 1 << 8
 				jmp .rw_source
-
-		.run:
-			cmp al, 'r'
-			jne .next
-			; Run
-			.cmdrun:
-				call interpreter
 
 		.next:
 			cmp al, '+'
@@ -217,7 +210,7 @@ editor:
 
 		.list:
 			cmp al, 'l'
-			jne .nomatch
+			jne .run
 			; List
 			.cmdlist:
 				lea si, [bx + 2]
@@ -231,6 +224,13 @@ editor:
 
 				.listed:
 					xor al, al
+
+		.run:
+			cmp al, 'r'
+			jne .nomatch
+			; Run
+			.cmdrun:
+				call interpreter
 
 		.nomatch:
 			test al, al
