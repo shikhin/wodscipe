@@ -5,12 +5,14 @@ Editor starts with the first line being the current line. The table below
 describes all of the commands supported.
 
 NOTE: Unlike ed, 'a' and 'i' input only one line at a time.
+NOTE: Gotoline is very hacky so it caps out at 255 and doesn't hadle error
+      conditions correctly
 
 Command     Name       Explanation
 +, newline  Next       Move to next line and output it
 $           Last       Move to the last line and output it
 -           Previous   Move to previous line and output it
-1           First      Move to the first line and output it
+[0-9]+      Gotoline   Go to specified line
 a           Append     Enter insert mode after current line
 d           Delete     Delete current line
 i           Insert     Enter insert mode before current line

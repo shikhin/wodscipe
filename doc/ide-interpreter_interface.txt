@@ -22,3 +22,6 @@ Interpreter should preserve:
 	stack state (as passed by wodscIDE)
 	segment registers
 	suitable environment for the BIOS
+
+Return:
+	AL should be zeroed out, to work around kludges in WodscIDE
