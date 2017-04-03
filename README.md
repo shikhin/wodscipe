@@ -9,8 +9,7 @@ extendable like a charm.
 
 ## Why?
 
-[We were building our own fucking birdfeeder.]
-(http://natashenka.ca/pocorgtfo02.pdf)
+[We were building our own fucking birdfeeder.](http://natashenka.ca/pocorgtfo02.pdf)
 
 ## Testing It Out
 
@@ -75,4 +74,4 @@ Supported Languages list.
 
 nortti (JuEeHa) and shikhin (Shikhin) are the folks behind this project.
 
-All authors hang out in `#osdev-offtopic` (FreeNode).
+All authors hang out in `#offtopia` (FreeNode).
