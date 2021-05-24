@@ -72,6 +72,6 @@ Supported Languages list.
 
 ## Authors
 
-nortti (JuEeHa) and shikhin (Shikhin) are the folks behind this project.
+nortti (JuEeHa) and shikhin are the folks behind this project.
 
-All authors hang out in `#offtopia` (FreeNode).
+All authors hang out in `#offtopia` (Libera.Chat).
